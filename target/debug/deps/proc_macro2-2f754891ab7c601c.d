@@ -1,0 +1,12 @@
+/Users/wiz/repos/tamagochi/target/debug/deps/proc_macro2-2f754891ab7c601c.rmeta: /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/lib.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/marker.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/parse.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/detection.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/fallback.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/wrapper.rs
+
+/Users/wiz/repos/tamagochi/target/debug/deps/libproc_macro2-2f754891ab7c601c.rlib: /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/lib.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/marker.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/parse.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/detection.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/fallback.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/wrapper.rs
+
+/Users/wiz/repos/tamagochi/target/debug/deps/proc_macro2-2f754891ab7c601c.d: /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/lib.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/marker.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/parse.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/detection.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/fallback.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/wrapper.rs
+
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/lib.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/marker.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/parse.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/detection.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/fallback.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.33/src/wrapper.rs:

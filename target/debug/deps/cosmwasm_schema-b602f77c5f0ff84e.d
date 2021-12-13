@@ -1,0 +1,10 @@
+/Users/wiz/repos/tamagochi/target/debug/deps/cosmwasm_schema-b602f77c5f0ff84e.rmeta: /Users/wiz/.cargo/git/checkouts/secretnetwork-2885a5c51d1243af/004c6bc/cosmwasm/packages/schema/src/lib.rs /Users/wiz/.cargo/git/checkouts/secretnetwork-2885a5c51d1243af/004c6bc/cosmwasm/packages/schema/src/casing.rs /Users/wiz/.cargo/git/checkouts/secretnetwork-2885a5c51d1243af/004c6bc/cosmwasm/packages/schema/src/export.rs /Users/wiz/.cargo/git/checkouts/secretnetwork-2885a5c51d1243af/004c6bc/cosmwasm/packages/schema/src/remove.rs
+
+/Users/wiz/repos/tamagochi/target/debug/deps/libcosmwasm_schema-b602f77c5f0ff84e.rlib: /Users/wiz/.cargo/git/checkouts/secretnetwork-2885a5c51d1243af/004c6bc/cosmwasm/packages/schema/src/lib.rs /Users/wiz/.cargo/git/checkouts/secretnetwork-2885a5c51d1243af/004c6bc/cosmwasm/packages/schema/src/casing.rs /Users/wiz/.cargo/git/checkouts/secretnetwork-2885a5c51d1243af/004c6bc/cosmwasm/packages/schema/src/export.rs /Users/wiz/.cargo/git/checkouts/secretnetwork-2885a5c51d1243af/004c6bc/cosmwasm/packages/schema/src/remove.rs
+
+/Users/wiz/repos/tamagochi/target/debug/deps/cosmwasm_schema-b602f77c5f0ff84e.d: /Users/wiz/.cargo/git/checkouts/secretnetwork-2885a5c51d1243af/004c6bc/cosmwasm/packages/schema/src/lib.rs /Users/wiz/.cargo/git/checkouts/secretnetwork-2885a5c51d1243af/004c6bc/cosmwasm/packages/schema/src/casing.rs /Users/wiz/.cargo/git/checkouts/secretnetwork-2885a5c51d1243af/004c6bc/cosmwasm/packages/schema/src/export.rs /Users/wiz/.cargo/git/checkouts/secretnetwork-2885a5c51d1243af/004c6bc/cosmwasm/packages/schema/src/remove.rs
+
+/Users/wiz/.cargo/git/checkouts/secretnetwork-2885a5c51d1243af/004c6bc/cosmwasm/packages/schema/src/lib.rs:
+/Users/wiz/.cargo/git/checkouts/secretnetwork-2885a5c51d1243af/004c6bc/cosmwasm/packages/schema/src/casing.rs:
+/Users/wiz/.cargo/git/checkouts/secretnetwork-2885a5c51d1243af/004c6bc/cosmwasm/packages/schema/src/export.rs:
+/Users/wiz/.cargo/git/checkouts/secretnetwork-2885a5c51d1243af/004c6bc/cosmwasm/packages/schema/src/remove.rs:

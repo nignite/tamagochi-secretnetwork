@@ -1,0 +1,12 @@
+/Users/wiz/repos/tamagochi/target/debug/deps/libschemars_derive-e4328cf3100b5f07.dylib: /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/lib.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/ast/mod.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/ast/from_serde.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/attr/mod.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/attr/doc.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/attr/schemars_to_serde.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/metadata.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/schema_exprs.rs
+
+/Users/wiz/repos/tamagochi/target/debug/deps/schemars_derive-e4328cf3100b5f07.d: /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/lib.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/ast/mod.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/ast/from_serde.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/attr/mod.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/attr/doc.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/attr/schemars_to_serde.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/metadata.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/schema_exprs.rs
+
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/lib.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/ast/mod.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/ast/from_serde.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/attr/mod.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/attr/doc.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/attr/schemars_to_serde.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/metadata.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/schemars_derive-0.7.6/src/schema_exprs.rs:

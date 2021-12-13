@@ -1,0 +1,13 @@
+/Users/wiz/repos/tamagochi/target/debug/deps/bincode2-2d35f0652f28aca2.rmeta: /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/lib.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/config.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/de/mod.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/de/read.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/error.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/internal.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/ser/mod.rs
+
+/Users/wiz/repos/tamagochi/target/debug/deps/libbincode2-2d35f0652f28aca2.rlib: /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/lib.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/config.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/de/mod.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/de/read.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/error.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/internal.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/ser/mod.rs
+
+/Users/wiz/repos/tamagochi/target/debug/deps/bincode2-2d35f0652f28aca2.d: /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/lib.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/config.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/de/mod.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/de/read.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/error.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/internal.rs /Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/ser/mod.rs
+
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/lib.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/config.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/de/mod.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/de/read.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/error.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/internal.rs:
+/Users/wiz/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode2-2.0.1/src/ser/mod.rs:
