@@ -1,2 +1,0 @@
-cargo:rustc-env=TYPENUM_BUILD_CONSTS=/Users/wiz/repos/tamagochi/target/debug/build/typenum-c80fbc5cfea8e431/out/consts.rs
-cargo:rustc-env=TYPENUM_BUILD_OP=/Users/wiz/repos/tamagochi/target/debug/build/typenum-c80fbc5cfea8e431/out/op.rs
