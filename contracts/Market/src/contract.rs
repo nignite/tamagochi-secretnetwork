@@ -1,9 +1,15 @@
 use std::vec;
 
+<<<<<<< HEAD
 use crate::msg::{HandleMessage, InitMsg, QueryMessage};
 use cosmwasm_std::{
     from_binary, to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier,
     StdResult, Storage,
+=======
+use crate::msg::{InitMsg, HandleMessage, QueryMessage};
+use cosmwasm_std::{
+    from_binary, Api, Binary, Env, Extern, InitResponse, Querier, StdResult, Storage, HandleResponse, to_binary,
+>>>>>>> 27b9821a09694f122e7e2f7e4b8932018df87b87
 };
 use food::msg::{InitConfig, InitMsg as TokenInitMsg};
 use secret_toolkit::utils::InitCallback;
@@ -48,17 +54,33 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
     })
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 27b9821a09694f122e7e2f7e4b8932018df87b87
 pub fn handle<S: Storage, A: Api, Q: Querier>(
     _deps: &mut Extern<S, A, Q>,
     _env: Env,
     _msg: HandleMessage,
 ) -> StdResult<HandleResponse> {
+<<<<<<< HEAD
     Ok(HandleResponse::default())
 }
 
+=======
+   Ok(HandleResponse::default())
+}
+
+
+>>>>>>> 27b9821a09694f122e7e2f7e4b8932018df87b87
 pub fn query<S: Storage, A: Api, Q: Querier>(
     _deps: &Extern<S, A, Q>,
     _msg: QueryMessage,
 ) -> StdResult<Binary> {
+<<<<<<< HEAD
     Ok(to_binary("data")?)
 }
+=======
+   Ok(to_binary("efwef")?)
+}
+>>>>>>> 27b9821a09694f122e7e2f7e4b8932018df87b87
