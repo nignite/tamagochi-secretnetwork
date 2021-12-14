@@ -1,8 +1,9 @@
 use std::vec;
 
-use crate::msg::InitMsg;
+use crate::msg::{HandleMessage, InitMsg, QueryMessage};
 use cosmwasm_std::{
-    from_binary, Api, Binary, Env, Extern, InitResponse, Querier, StdResult, Storage,
+    from_binary, to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier,
+    StdResult, Storage,
 };
 use food::msg::{InitConfig, InitMsg as TokenInitMsg};
 use secret_toolkit::utils::InitCallback;
@@ -45,4 +46,19 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
         messages: vec![init_msg],
         log: vec![],
     })
+}
+
+pub fn handle<S: Storage, A: Api, Q: Querier>(
+    _deps: &mut Extern<S, A, Q>,
+    _env: Env,
+    _msg: HandleMessage,
+) -> StdResult<HandleResponse> {
+    Ok(HandleResponse::default())
+}
+
+pub fn query<S: Storage, A: Api, Q: Querier>(
+    _deps: &Extern<S, A, Q>,
+    _msg: QueryMessage,
+) -> StdResult<Binary> {
+    Ok(to_binary("data")?)
 }

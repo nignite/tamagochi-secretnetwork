@@ -332,20 +332,14 @@ dependencies = [
 name = "market"
 version = "0.1.0"
 dependencies = [
- "base64 0.12.3",
- "bincode2",
  "cosmwasm-schema 0.10.0 (git+https://github.com/enigmampc/SecretNetwork?tag=v1.0.0)",
  "cosmwasm-std 0.10.0 (git+https://github.com/enigmampc/SecretNetwork?tag=v1.0.0)",
  "cosmwasm-storage 0.10.0 (git+https://github.com/enigmampc/SecretNetwork?tag=v1.0.0)",
  "food",
- "rand_chacha",
- "rand_core",
  "schemars",
  "secret-toolkit",
  "serde",
- "sha2 0.9.8",
  "snafu",
- "subtle 2.4.1",
 ]
 
 [[package]]

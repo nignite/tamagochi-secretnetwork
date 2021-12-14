@@ -23,17 +23,11 @@ default = []
 backtraces = ["cosmwasm-std/backtraces"]
 
 [dependencies]
-food = { path = "../../packages/Food", default-features = true }
+food = { path = "../../packages/Food", default-features = false }
 cosmwasm-schema = { git = "https://github.com/enigmampc/SecretNetwork", tag = "v1.0.0" }
 cosmwasm-std = { git = "https://github.com/enigmampc/SecretNetwork", tag = "v1.0.0" }
 cosmwasm-storage = { git = "https://github.com/enigmampc/SecretNetwork", tag = "v1.0.0" }
-secret-toolkit = { git = "https://github.com/enigmampc/secret-toolkit", rev = "b57fa0b01746cbdb5c3cf2bd3a8fdc5bfb86ed86", default-features = true }
+secret-toolkit = { git = "https://github.com/enigmampc/secret-toolkit", rev = "b57fa0b01746cbdb5c3cf2bd3a8fdc5bfb86ed86", default-features = false }
 schemars = "0.7"
 serde = { version = "1.0.103", default-features = false, features = ["derive"] }
 snafu = { version = "0.6.3" }
-bincode2 = "2.0.1"
-subtle = { version = "2.2.3", default-features = false }
-base64 = "0.12.3"
-rand_chacha = { version = "0.2.2", default-features = false }
-rand_core = { version = "0.5.1", default-features = false }
-sha2 = { version = "0.9.1", default-features = false }
