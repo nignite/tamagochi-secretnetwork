@@ -9,6 +9,7 @@ use crate::transaction_history::{RichTx, Tx};
 use crate::viewing_key::ViewingKey;
 use cosmwasm_std::{Binary, HumanAddr, StdError, StdResult, Uint128};
 use secret_toolkit::permit::Permit;
+use secret_toolkit::utils::InitCallback;
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema)]
 pub struct InitialBalance {
@@ -25,6 +26,9 @@ pub struct InitMsg {
     pub initial_balances: Option<Vec<InitialBalance>>,
     pub prng_seed: String,
     pub config: Option<InitConfig>,
+}
+impl InitCallback for InitMsg {
+    const BLOCK_SIZE: usize = 256;
 }
 
 impl InitMsg {

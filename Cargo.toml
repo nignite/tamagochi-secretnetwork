@@ -1,5 +1,6 @@
 [workspace]
 members = ["contracts/Market", "contracts/Pet", "packages/Food"]
+
 [profile.release]
 opt-level = 3
 debug = false
