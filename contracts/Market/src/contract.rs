@@ -32,7 +32,7 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
         symbol: "FDT".to_string(),
         decimals: 2,
         initial_balances: None,
-        prng_seed: "happyitworks".to_string(),
+        prng_seed: msg.prng_seed,
         config: Some(init_config),
     }
     .to_cosmos_msg(
