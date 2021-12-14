@@ -8,7 +8,7 @@ The traditional, Japanese, handheld digital pet. Recreated using smart contracts
 | ---------------------------- | ---------------------------------------------- |
 | [`Market`](contracts/Market) | Used as a marketplace to buy FOOD tokens       |
 | [`Food`](packages/Food)      | Snip-20 contract, used to create the token     |
-| [`Pet`](contracts/Pet)       | Tamatotchi like interface through the contract |
+| [`Pet`](contracts/Pet)       | Tamagotchi like interface through the contract |
 
 ## Building the contracts
 
