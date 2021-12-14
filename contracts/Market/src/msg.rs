@@ -6,10 +6,9 @@ use crate::state::SecretContract;
 #[derive(Serialize, Deserialize, JsonSchema, Clone, PartialEq, Debug)]
 #[serde(rename_all = "snake_case")]
 pub struct InitMsg {
-    pub accepted_token: SecretContract,
-    pub offered_token: SecretContract,
-    pub exchange_rate: Uint128,
-    pub viewing_key: String,
+    pub token_code_id: u64,
+    pub token_contract_hash: String,
+    pub prng_seed: String,
 }
 
 #[derive(Serialize, Deserialize, JsonSchema, Clone, PartialEq, Debug)]
