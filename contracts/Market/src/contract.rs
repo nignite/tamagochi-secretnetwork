@@ -1,9 +1,9 @@
-use std::vec;
+use std::{env, vec};
 
 use crate::msg::{HandleMessage, InitMsg, QueryMessage};
 use cosmwasm_std::{
-    from_binary, to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, LogAttribute,
-    Querier, StdResult, Storage,
+    from_binary, log, to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse,
+    LogAttribute, Querier, StdResult, Storage, Uint128,
 };
 use food::msg::{InitConfig, InitMsg as TokenInitMsg};
 use secret_toolkit::utils::InitCallback;
@@ -32,19 +32,32 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
         symbol: "FDT".to_string(),
         decimals: 2,
         initial_balances: None,
-        prng_seed: msg.prng_seed.to_string(),
+        prng_seed: "awdawd".to_string(),
         config: None,
     }
     .to_cosmos_msg(
         "fd".to_string(),
         msg.token_code_id,
-        msg.token_contract_hash,
-        None,
+        msg.token_contract_hash.clone(),
+        Some(Uint128(4)),
     )?;
-
     Ok(InitResponse {
         messages: vec![init_msg],
-        log: vec![],
+        log: vec![
+            LogAttribute {
+                key: "msg".to_string(),
+                value: "init".to_string(),
+            },
+            LogAttribute {
+                key: "token_code_id".to_string(),
+                value: msg.token_code_id.clone().to_string(),
+            },
+            LogAttribute {
+                key: "token_contract_hash".to_string(),
+                value: msg.token_contract_hash.clone().to_string(),
+            },
+            log("status", "success"),
+        ],
     })
 }
 
