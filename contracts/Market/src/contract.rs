@@ -13,7 +13,7 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
     _env: Env,
     msg: InitMsg,
 ) -> StdResult<InitResponse> {
-    let init_config: InitConfig = from_binary(&Binary::from(
+    let _init_config: InitConfig = from_binary(&Binary::from(
         format!(
             "{{\"public_total_supply\":{},
         \"enable_deposit\":{},
@@ -33,7 +33,7 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
         decimals: 2,
         initial_balances: None,
         prng_seed: msg.prng_seed,
-        config: Some(init_config),
+        config: None,
     }
     .to_cosmos_msg(
         "fd".to_string(),
@@ -61,4 +61,26 @@ pub fn query<S: Storage, A: Api, Q: Querier>(
     _msg: QueryMessage,
 ) -> StdResult<Binary> {
     Ok(to_binary("data")?)
+}
+
+/* TESTS --------------------------------------------------------------------------------------------------------------------------------------*/
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use cosmwasm_std::{coins, testing::*};
+    #[test]
+    fn test_init() {
+        let mut deps = mock_dependencies(20, &coins(2, "token"));
+
+        let msg = InitMsg {
+            prng_seed: "testing".to_string(),
+            token_code_id: 1,
+            token_contract_hash: "A7966C6CDEE9289A7C5DF482F7D1DBF67633471F30A7D609A03670DADBF95591"
+                .to_string(),
+        };
+        let env = mock_env("creator", &coins(3, "fdt"));
+        let _res = init(&mut deps, env, msg).unwrap();
+        println!("{:?}", &_res)
+    }
 }

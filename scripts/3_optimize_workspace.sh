@@ -18,7 +18,6 @@ mkdir -p artifacts
 
 echo "Building contracts"
 
-RUSTFLAGS='-C link-arg=-s' cargo build --release --target wasm32-unknown-unknown --locked
 
 echo "Optimizing artifacts in workspace ..."
 
