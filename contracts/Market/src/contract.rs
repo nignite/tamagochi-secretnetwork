@@ -2,8 +2,8 @@ use std::vec;
 
 use crate::msg::{HandleMessage, InitMsg, QueryMessage};
 use cosmwasm_std::{
-    from_binary, to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier,
-    StdResult, Storage,
+    from_binary, to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, LogAttribute,
+    Querier, StdResult, Storage,
 };
 use food::msg::{InitConfig, InitMsg as TokenInitMsg};
 use secret_toolkit::utils::InitCallback;
@@ -32,7 +32,7 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
         symbol: "FDT".to_string(),
         decimals: 2,
         initial_balances: None,
-        prng_seed: msg.prng_seed,
+        prng_seed: msg.prng_seed.to_string(),
         config: None,
     }
     .to_cosmos_msg(
