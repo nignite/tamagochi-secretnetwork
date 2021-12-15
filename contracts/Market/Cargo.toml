@@ -27,7 +27,7 @@ food = { path = "../../packages/Food", default-features = false }
 cosmwasm-schema = { git = "https://github.com/enigmampc/SecretNetwork", tag = "v1.0.0" }
 cosmwasm-std = { git = "https://github.com/enigmampc/SecretNetwork", tag = "v1.0.0" }
 cosmwasm-storage = { git = "https://github.com/enigmampc/SecretNetwork", tag = "v1.0.0" }
-secret-toolkit = { git = "https://github.com/enigmampc/secret-toolkit", rev = "b57fa0b01746cbdb5c3cf2bd3a8fdc5bfb86ed86", default-features = false }
+secret-toolkit = { git = "https://github.com/enigmampc/secret-toolkit", rev = "b57fa0b01746cbdb5c3cf2bd3a8fdc5bfb86ed86" }
 schemars = "0.7"
 serde = { version = "1.0.103", default-features = false, features = ["derive"] }
 snafu = { version = "0.6.3" }
