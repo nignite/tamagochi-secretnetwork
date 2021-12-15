@@ -1,8 +1,7 @@
-#!/bin/ash
-# shellcheck shell=dash
-# See https://www.shellcheck.net/wiki/SC2187
+#!/bin/bash
 set -o errexit -o nounset -o pipefail
-command -v shellcheck >/dev/null && shellcheck "$0"
+command -v shellcheck > /dev/null && shellcheck "$0"
+# See https://www.shellcheck.net/wiki/SC2187
 
 export PATH="$PATH:/root/.cargo/bin"
 
@@ -14,18 +13,15 @@ SUFFIX=${SUFFIX:+-$SUFFIX}
 rustup toolchain list
 cargo --version
 
-# Delete already built artifacts
-rm -f target/wasm32-unknown-unknown/release/*.wasm
-
-# Build artifacts
-echo "Building artifacts in workspace ..."
-/usr/local/bin/build_workspace
-
+rm -rf artifacts
 mkdir -p artifacts
-echo "Creating intermediate hashes ..."
-sha256sum -- target/wasm32-unknown-unknown/release/*.wasm | tee artifacts/checksums_intermediate.txt
+
+echo "Building contracts"
+
+RUSTFLAGS='-C link-arg=-s' cargo build --release --target wasm32-unknown-unknown --locked
 
 echo "Optimizing artifacts in workspace ..."
+
 TMPARTIFACTS=$(mktemp -p "$(pwd)" -d artifacts.XXXXXX)
 # Optimize artifacts
 (
@@ -34,7 +30,7 @@ TMPARTIFACTS=$(mktemp -p "$(pwd)" -d artifacts.XXXXXX)
   for WASM in ../target/wasm32-unknown-unknown/release/*.wasm; do
     NAME=$(basename "$WASM" .wasm)${SUFFIX}.wasm
     echo "Optimizing $NAME ..."
-    wasm-opt -Os "$WASM" -o "$NAME"
+    wasm-opt -Oz "$WASM" -o "$NAME"
   done
   echo "Moving wasm files ..."
   mv ./*.wasm ../artifacts
