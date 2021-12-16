@@ -24,7 +24,7 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
     Ok(InitResponse {
         messages: vec![],
         log: vec![],
-    };)
+    })
 }
 
 pub fn handle<S: Storage, A: Api, Q: Querier>(
