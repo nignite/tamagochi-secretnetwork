@@ -1,10 +1,10 @@
 use std::vec;
 
 use crate::msg::{HandleMessage, InitMsg, QueryMessage};
-use crate::state::{config, State, config_read};
+use crate::state::{config, config_read, State};
 use cosmwasm_std::{
-     to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier, StdResult,
-    Storage, Uint128, log,
+    log, to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier, StdResult,
+    Storage, Uint128,
 };
 use secret_toolkit::snip20;
 pub fn init<S: Storage, A: Api, Q: Querier>(
@@ -48,37 +48,38 @@ pub fn try_buy_food<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
     env: Env,
 ) -> StdResult<HandleResponse> {
-    let state = config_read(&deps.storage).load()?;
-    let sender = &env.message.sender;
-    
+    let mut state = config_read(&deps.storage).load()?;
+
     let mut total_coins_sent = Uint128(0);
     for coin in env.message.sent_funds.iter() {
         total_coins_sent = total_coins_sent + coin.amount;
     }
-    state.total_raised+=total_coins_sent;
+    state.total_raised += total_coins_sent;
     config(&mut deps.storage).save(&state)?;
 
     let amount_to_mint = Uint128(total_coins_sent.u128() * state.exchange_rate.u128());
 
     let mint_msg = snip20::mint_msg(
-        env.message.sender, 
-        amount_to_mint, 
-        None, 
+        env.message.sender.clone(),
+        amount_to_mint,
+        None,
         256,
         state.contract_hash,
-        state.contract_adress)?;
+        state.contract_adress,
+    )?;
 
     Ok(HandleResponse {
         messages: vec![mint_msg],
-        log: vec![log("action", "mint"), log("amount", &total_coins_sent),log("recipient", env.message.sender)],
+        log: vec![
+            log("action", "mint"),
+            log("amount", &total_coins_sent),
+            log("recipient", env.message.sender.clone()),
+        ],
         data: None,
     })
-}  
+}
 
 /* TESTS --------------------------------------------------------------------------------------------------------------------------------------*/
 
 #[cfg(test)]
-mod tests {
-    
-
-}
+mod tests {}
