@@ -1,32 +1,40 @@
 use std::vec;
 
-use crate::constants::{DECIMALS, TOKEN_INIT_LABEL, TOKEN_NAME, TOKEN_SYMBOL};
 use crate::msg::{HandleMessage, InitMsg, QueryMessage};
+use crate::state::{config, State, config_read};
 use cosmwasm_std::{
-    from_binary, log, to_binary, Api, Binary, CosmosMsg, Env, Extern, HandleResponse, InitResponse,
-    Querier, StdError, StdResult, Storage,
+     to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier, StdResult,
+    Storage, Uint128, log,
 };
-use food::msg::{InitConfig, InitMsg as TokenInitMsg};
-use secret_toolkit::utils::InitCallback;
+use secret_toolkit::snip20;
 pub fn init<S: Storage, A: Api, Q: Querier>(
-    _deps: &mut Extern<S, A, Q>,
-    _env: Env,
+    deps: &mut Extern<S, A, Q>,
+    env: Env,
     msg: InitMsg,
 ) -> StdResult<InitResponse> {
-    let init_msg = create_token_init_msg(msg.clone())?;
+    let state = State {
+        exchange_rate: msg.token_exchange_rate,
+        admin: msg.admin.unwrap_or(env.message.sender),
+        contract_adress: msg.token_contract_adress,
+        total_raised: Uint128(0),
+        contract_hash: msg.token_contract_hash,
+    };
+    config(&mut deps.storage).save(&state)?;
 
     Ok(InitResponse {
-        messages: vec![init_msg],
-        log: vec![log("status", "success")],
-    })
+        messages: vec![],
+        log: vec![],
+    };)
 }
 
 pub fn handle<S: Storage, A: Api, Q: Querier>(
-    _deps: &mut Extern<S, A, Q>,
-    _env: Env,
-    _msg: HandleMessage,
+    deps: &mut Extern<S, A, Q>,
+    env: Env,
+    msg: HandleMessage,
 ) -> StdResult<HandleResponse> {
-    Ok(HandleResponse::default())
+    match msg {
+        HandleMessage::BuyFood {} => try_buy_food(deps, env),
+    }
 }
 
 pub fn query<S: Storage, A: Api, Q: Querier>(
@@ -36,56 +44,41 @@ pub fn query<S: Storage, A: Api, Q: Querier>(
     Ok(to_binary("data")?)
 }
 
-// Create the message to be sent over to the food/snip-20 contract
-pub fn create_token_init_msg(msg: InitMsg) -> Result<CosmosMsg, StdError> {
-    let _init_config: InitConfig = from_binary(&Binary::from(
-        format!(
-            "{{\"public_total_supply\":{},
-        \"enable_deposit\":{},
-        \"enable_redeem\":{},
-        \"enable_mint\":{},
-        \"enable_burn\":{}}}",
-            true, true, false, true, true
-        )
-        .as_bytes(),
-    ))
-    .unwrap();
-
-    TokenInitMsg {
-        name: String::from_utf8(TOKEN_NAME.to_vec()).unwrap(),
-        admin: None,
-        symbol: String::from_utf8(TOKEN_SYMBOL.to_vec()).unwrap(),
-        decimals: DECIMALS,
-        initial_balances: None,
-        prng_seed: Binary::from(msg.prng_seed.as_bytes()),
-        config: None,
+pub fn try_buy_food<S: Storage, A: Api, Q: Querier>(
+    deps: &mut Extern<S, A, Q>,
+    env: Env,
+) -> StdResult<HandleResponse> {
+    let state = config_read(&deps.storage).load()?;
+    let sender = &env.message.sender;
+    
+    let mut total_coins_sent = Uint128(0);
+    for coin in env.message.sent_funds.iter() {
+        total_coins_sent = total_coins_sent + coin.amount;
     }
-    .to_cosmos_msg(
-        String::from_utf8(TOKEN_INIT_LABEL.to_vec()).unwrap(),
-        msg.token_code_id,
-        msg.token_contract_hash.clone(),
-        None,
-    )
-}
+    state.total_raised+=total_coins_sent;
+    config(&mut deps.storage).save(&state)?;
+
+    let amount_to_mint = Uint128(total_coins_sent.u128() * state.exchange_rate.u128());
+
+    let mint_msg = snip20::mint_msg(
+        env.message.sender, 
+        amount_to_mint, 
+        None, 
+        256,
+        state.contract_hash,
+        state.contract_adress)?;
+
+    Ok(HandleResponse {
+        messages: vec![mint_msg],
+        log: vec![log("action", "mint"), log("amount", &total_coins_sent),log("recipient", env.message.sender)],
+        data: None,
+    })
+}  
 
 /* TESTS --------------------------------------------------------------------------------------------------------------------------------------*/
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use cosmwasm_std::{coins, testing::*};
-    #[test]
-    fn test_init() {
-        let mut deps = mock_dependencies(20, &coins(2, "token"));
+    
 
-        let msg = InitMsg {
-            prng_seed: "testing".to_string(),
-            token_code_id: 1,
-            token_contract_hash: "A7966C6CDEE9289A7C5DF482F7D1DBF67633471F30A7D609A03670DADBF95591"
-                .to_string(),
-        };
-        let env = mock_env("creator", &coins(3, "fdt"));
-        let _res = init(&mut deps, env, msg).unwrap();
-        println!("{:?}", &_res)
-    }
 }

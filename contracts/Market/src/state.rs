@@ -6,20 +6,12 @@ use serde::{Deserialize, Serialize};
 pub static CONFIG_KEY: &[u8] = b"config";
 
 #[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone, JsonSchema)]
-pub struct SecretContract {
-    pub address: HumanAddr,
-    pub contract_hash: String,
-}
-
-#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone, JsonSchema)]
 pub struct State {
-    pub accepted_token: SecretContract,
     pub exchange_rate: Uint128,
-    pub offered_token: SecretContract,
     pub admin: HumanAddr,
     pub contract_adress: HumanAddr,
+    pub contract_hash: String,
     pub total_raised: Uint128,
-    pub viewing_key: String,
 }
 
 // returns a mutable singleton instance of the storage

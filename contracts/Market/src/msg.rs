@@ -2,38 +2,38 @@ use cosmwasm_std::{HumanAddr, Uint128};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use crate::state::SecretContract;
 #[derive(Serialize, Deserialize, JsonSchema, Clone, PartialEq, Debug)]
 #[serde(rename_all = "snake_case")]
 pub struct InitMsg {
-    pub token_code_id: u64,
+    pub token_contract_adress: HumanAddr,
     pub token_contract_hash: String,
-    pub prng_seed: String,
+    pub token_exchange_rate: Uint128,
+    pub admin: Option<HumanAddr>,
 }
 
 #[derive(Serialize, Deserialize, JsonSchema, Clone, PartialEq, Debug)]
 #[serde(rename_all = "snake_case")]
-pub enum HandleMessage {}
+pub enum HandleMessage {
+    BuyFood {},
+}
 
 #[derive(Serialize, Deserialize, JsonSchema, Clone, PartialEq, Debug)]
 #[serde(rename_all = "snake_case")]
-pub enum QueryMessage {}
+pub enum QueryMessage {
+    Config {},
+    TotalRaised {},
+}
 
-#[derive(Serialize, Deserialize, JsonSchema, Clone, PartialEq, Debug)]
-#[serde(rename_all = "snake_case")]
-pub enum RecieveMsg {}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema)]
 pub struct ConfigResponse {
-    pub accepted_token: SecretContract,
-    pub offered_token: SecretContract,
-    pub admin: HumanAddr,
+    pub token_code_id: Uint128,
+    pub token_contract_hash: String,
+    pub token_prng_seed: String,
     pub exchange_rate: Uint128,
-    pub contract_address: HumanAddr,
-    pub total_raised: Uint128,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub struct BalanceResponse {
+#[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema)]
+
+pub struct TotalRaisedResponse {
     pub amount: Uint128,
 }
