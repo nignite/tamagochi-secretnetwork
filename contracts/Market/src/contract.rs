@@ -1,63 +1,23 @@
-use std::{env, vec};
+use std::vec;
 
+use crate::constants::{DECIMALS, TOKEN_INIT_LABEL, TOKEN_NAME, TOKEN_SYMBOL};
 use crate::msg::{HandleMessage, InitMsg, QueryMessage};
 use cosmwasm_std::{
-    from_binary, log, to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse,
-    LogAttribute, Querier, StdResult, Storage, Uint128,
+    from_binary, log, to_binary, Api, Binary, CosmosMsg, Env, Extern, HandleResponse, InitResponse,
+    Querier, StdError, StdResult, Storage,
 };
 use food::msg::{InitConfig, InitMsg as TokenInitMsg};
 use secret_toolkit::utils::InitCallback;
-
 pub fn init<S: Storage, A: Api, Q: Querier>(
     _deps: &mut Extern<S, A, Q>,
     _env: Env,
     msg: InitMsg,
 ) -> StdResult<InitResponse> {
-    let _init_config: InitConfig = from_binary(&Binary::from(
-        format!(
-            "{{\"public_total_supply\":{},
-        \"enable_deposit\":{},
-        \"enable_redeem\":{},
-        \"enable_mint\":{},
-        \"enable_burn\":{}}}",
-            true, true, false, true, true
-        )
-        .as_bytes(),
-    ))
-    .unwrap();
+    let init_msg = create_token_init_msg(msg.clone())?;
 
-    let init_msg = TokenInitMsg {
-        name: "Food".to_string(),
-        admin: None,
-        symbol: "FDT".to_string(),
-        decimals: 2,
-        initial_balances: None,
-        prng_seed: "awdawd".to_string(),
-        config: None,
-    }
-    .to_cosmos_msg(
-        "fd".to_string(),
-        msg.token_code_id,
-        msg.token_contract_hash.clone(),
-        Some(Uint128(4)),
-    )?;
     Ok(InitResponse {
         messages: vec![init_msg],
-        log: vec![
-            LogAttribute {
-                key: "msg".to_string(),
-                value: "init".to_string(),
-            },
-            LogAttribute {
-                key: "token_code_id".to_string(),
-                value: msg.token_code_id.clone().to_string(),
-            },
-            LogAttribute {
-                key: "token_contract_hash".to_string(),
-                value: msg.token_contract_hash.clone().to_string(),
-            },
-            log("status", "success"),
-        ],
+        log: vec![log("status", "success")],
     })
 }
 
@@ -74,6 +34,38 @@ pub fn query<S: Storage, A: Api, Q: Querier>(
     _msg: QueryMessage,
 ) -> StdResult<Binary> {
     Ok(to_binary("data")?)
+}
+
+// Create the message to be sent over to the food/snip-20 contract
+pub fn create_token_init_msg(msg: InitMsg) -> Result<CosmosMsg, StdError> {
+    let _init_config: InitConfig = from_binary(&Binary::from(
+        format!(
+            "{{\"public_total_supply\":{},
+        \"enable_deposit\":{},
+        \"enable_redeem\":{},
+        \"enable_mint\":{},
+        \"enable_burn\":{}}}",
+            true, true, false, true, true
+        )
+        .as_bytes(),
+    ))
+    .unwrap();
+
+    TokenInitMsg {
+        name: String::from_utf8(TOKEN_NAME.to_vec()).unwrap(),
+        admin: None,
+        symbol: String::from_utf8(TOKEN_SYMBOL.to_vec()).unwrap(),
+        decimals: DECIMALS,
+        initial_balances: None,
+        prng_seed: Binary::from(msg.prng_seed.as_bytes()),
+        config: None,
+    }
+    .to_cosmos_msg(
+        String::from_utf8(TOKEN_INIT_LABEL.to_vec()).unwrap(),
+        msg.token_code_id,
+        msg.token_contract_hash.clone(),
+        None,
+    )
 }
 
 /* TESTS --------------------------------------------------------------------------------------------------------------------------------------*/

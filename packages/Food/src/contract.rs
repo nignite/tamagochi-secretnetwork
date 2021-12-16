@@ -79,7 +79,7 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
         }
     }
 
-    let prng_seed_hashed = sha_256(&msg.prng_seed.as_bytes());
+    let prng_seed_hashed = sha_256(&msg.prng_seed.0);
 
     let mut config = Config::from_storage(&mut deps.storage);
     config.set_constants(&Constants {
@@ -1765,7 +1765,7 @@ mod tests {
             symbol: "SECSEC".to_string(),
             decimals: 8,
             initial_balances: Some(initial_balances),
-            prng_seed: "lolz fun yay".to_string(),
+            prng_seed: Binary::from("lolz fun yay".as_bytes()),
             config: None,
         };
 
@@ -1810,7 +1810,7 @@ mod tests {
             symbol: "SECSEC".to_string(),
             decimals: 8,
             initial_balances: Some(initial_balances),
-            prng_seed: "lolz fun yay".to_string(),
+            prng_seed: Binary::from("lolz fun yay".as_bytes()),
             config: Some(init_config),
         };
 
@@ -3674,7 +3674,7 @@ mod tests {
                 address: HumanAddr("giannis".to_string()),
                 amount: init_supply,
             }]),
-            prng_seed: "lolz fun yay".to_string(),
+            prng_seed: Binary::from("lolz fun yay".as_bytes()),
             config: Some(init_config),
         };
         let init_result = init(&mut deps, env, init_msg);
@@ -3740,7 +3740,7 @@ mod tests {
                 address: HumanAddr("giannis".to_string()),
                 amount: init_supply,
             }]),
-            prng_seed: "lolz fun yay".to_string(),
+            prng_seed: Binary::from("lolz fun yay".as_bytes()),
             config: Some(init_config),
         };
         let init_result = init(&mut deps, env, init_msg);
@@ -3809,7 +3809,7 @@ mod tests {
                 address: HumanAddr("giannis".to_string()),
                 amount: init_supply,
             }]),
-            prng_seed: "lolz fun yay".to_string(),
+            prng_seed: Binary::from("lolz fun yay".as_bytes()),
             config: Some(init_config),
         };
         let init_result = init(&mut deps, env, init_msg);
@@ -3866,7 +3866,7 @@ mod tests {
                 address: HumanAddr("giannis".to_string()),
                 amount: init_supply,
             }]),
-            prng_seed: "lolz fun yay".to_string(),
+            prng_seed: Binary::from("lolz fun yay".as_bytes()),
             config: Some(init_config),
         };
         let init_result = init(&mut deps, env, init_msg);
@@ -3923,7 +3923,7 @@ mod tests {
                 address: HumanAddr("giannis".to_string()),
                 amount: init_supply,
             }]),
-            prng_seed: "lolz fun yay".to_string(),
+            prng_seed: Binary::from("lolz fun yay".as_bytes()),
             config: Some(init_config),
         };
         let init_result = init(&mut deps, env, init_msg);
@@ -3968,7 +3968,7 @@ mod tests {
                 address: HumanAddr("giannis".to_string()),
                 amount: init_supply,
             }]),
-            prng_seed: "lolz fun yay".to_string(),
+            prng_seed: Binary::from("lolz fun yay".as_bytes()),
             config: None,
         };
         let init_result = init(&mut deps, env, init_msg);
