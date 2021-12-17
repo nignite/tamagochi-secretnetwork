@@ -1,11 +1,11 @@
 use cosmwasm_std::{
-    Api, Binary, Env, Extern, HandleResponse, HumanAddr, InitResponse, Querier, StdError,
-    StdResult, Storage, Uint128,
+    to_binary, Api, Binary, Env, Extern, HandleResponse, HumanAddr, InitResponse, Querier,
+    QueryResult, StdError, StdResult, Storage, Uint128,
 };
 
 use crate::{
     constants::RESPONSE_BLOCK_SIZE,
-    msg::{HandleMsg, InitMsg},
+    msg::{HandleMsg, InitMsg, QueryMsg, QueryResponse},
     state::{config, config_read, State},
 };
 use secret_toolkit::snip20;
@@ -86,11 +86,21 @@ pub fn try_feed<S: Storage, A: Api, Q: Querier>(
     Ok(HandleResponse::default())
 }
 
-// pub fn query<S: Storage, A: Api, Q: Querier>(
-//     deps: &Extern<S, A, Q>,
-//     msg: QueryMsg,
-// ) -> StdResult<Binary> {
-// }
+pub fn query<S: Storage, A: Api, Q: Querier>(
+    deps: &Extern<S, A, Q>,
+    msg: QueryMsg,
+) -> StdResult<Binary> {
+    match msg {
+        QueryMsg::LastFed {} => query_last_fed(&deps.storage),
+    }
+}
+
+fn query_last_fed<S: Storage>(storage: &S) -> QueryResult {
+    let state = config_read(storage).load()?;
+    to_binary(&QueryResponse::LastFedResponse {
+        timestamp: state.last_fed,
+    })
+}
 
 #[cfg(test)]
 mod tests {}

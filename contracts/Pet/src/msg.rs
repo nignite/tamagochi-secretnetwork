@@ -13,7 +13,6 @@ pub struct InitMsg {
     pub total_saturation_time: u64,
     pub admin: Option<HumanAddr>,
     pub viewing_key: String,
-
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -30,4 +29,10 @@ pub enum HandleMsg {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
-pub enum QueryMsg {}
+pub enum QueryMsg {
+    LastFed {},
+}
+#[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema)]
+pub enum QueryResponse {
+    LastFedResponse { timestamp: u64 },
+}
