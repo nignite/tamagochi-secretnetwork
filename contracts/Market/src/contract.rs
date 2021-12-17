@@ -4,8 +4,8 @@ use crate::constants::RESPONSE_BLOCK_SIZE;
 use crate::msg::{ConfigResponse, HandleMessage, InitMsg, QueryMessage, TotalRaisedResponse};
 use crate::state::{config, config_read, State};
 use cosmwasm_std::{
-    log, to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier, StdResult,
-    Storage, Uint128,
+    log, to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier, StdError,
+    StdResult, Storage, Uint128,
 };
 use secret_toolkit::snip20;
 
@@ -75,10 +75,19 @@ pub fn try_buy_food<S: Storage, A: Api, Q: Querier>(
 ) -> StdResult<HandleResponse> {
     let mut state = config_read(&deps.storage).load()?;
 
-    let mut total_coins_sent = Uint128(0);
+    let mut total_coins_sent = Uint128::zero();
     for coin in env.message.sent_funds.iter() {
+        if coin.denom != "uscrt" {
+            return Err(StdError::generic_err(
+                "Only uscrt is supported. Invalid token sent. ",
+            ));
+        }
         total_coins_sent = total_coins_sent + coin.amount;
     }
+    if total_coins_sent.is_zero() {
+        return Err(StdError::generic_err("No coins sent"));
+    }
+
     state.total_raised += total_coins_sent;
     config(&mut deps.storage).save(&state)?;
 
