@@ -1,12 +1,14 @@
 use std::vec;
 
-use crate::msg::{HandleMessage, InitMsg, QueryMessage};
+use crate::constants::RESPONSE_BLOCK_SIZE;
+use crate::msg::{ConfigResponse, HandleMessage, InitMsg, QueryMessage, TotalRaisedResponse};
 use crate::state::{config, config_read, State};
 use cosmwasm_std::{
     log, to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier, StdResult,
     Storage, Uint128,
 };
 use secret_toolkit::snip20;
+
 pub fn init<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
     env: Env,
@@ -15,7 +17,7 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
     let state = State {
         exchange_rate: msg.token_exchange_rate,
         admin: msg.admin.unwrap_or(env.message.sender),
-        contract_adress: msg.token_contract_adress,
+        contract_adress: msg.token_contract_address,
         total_raised: Uint128(0),
         contract_hash: msg.token_contract_hash,
     };
@@ -38,10 +40,33 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
 }
 
 pub fn query<S: Storage, A: Api, Q: Querier>(
-    _deps: &Extern<S, A, Q>,
-    _msg: QueryMessage,
+    deps: &Extern<S, A, Q>,
+    msg: QueryMessage,
 ) -> StdResult<Binary> {
-    Ok(to_binary("data")?)
+    match msg {
+        QueryMessage::Config {} => to_binary(&query_config(deps)),
+        QueryMessage::TotalRaised {} => to_binary(&query_total_raised(deps)),
+    }
+}
+
+pub fn query_total_raised<S: Storage, A: Api, Q: Querier>(
+    deps: &Extern<S, A, Q>,
+) -> StdResult<TotalRaisedResponse> {
+    let state = config_read(&deps.storage).load()?;
+    Ok(TotalRaisedResponse {
+        amount: state.total_raised,
+    })
+}
+pub fn query_config<S: Storage, A: Api, Q: Querier>(
+    deps: &Extern<S, A, Q>,
+) -> StdResult<ConfigResponse> {
+    let state = config_read(&deps.storage).load()?;
+    Ok(ConfigResponse {
+        token_contract_hash: state.contract_hash,
+        exchange_rate: state.exchange_rate,
+        token_contract_address: state.contract_adress,
+        admin: state.admin,
+    })
 }
 
 pub fn try_buy_food<S: Storage, A: Api, Q: Querier>(
@@ -63,7 +88,7 @@ pub fn try_buy_food<S: Storage, A: Api, Q: Querier>(
         env.message.sender.clone(),
         amount_to_mint,
         None,
-        256,
+        RESPONSE_BLOCK_SIZE,
         state.contract_hash,
         state.contract_adress,
     )?;

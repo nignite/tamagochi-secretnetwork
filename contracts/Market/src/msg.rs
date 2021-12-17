@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, JsonSchema, Clone, PartialEq, Debug)]
 #[serde(rename_all = "snake_case")]
 pub struct InitMsg {
-    pub token_contract_adress: HumanAddr,
+    pub token_contract_address: HumanAddr,
     pub token_contract_hash: String,
     pub token_exchange_rate: Uint128,
     pub admin: Option<HumanAddr>,
@@ -26,9 +26,9 @@ pub enum QueryMessage {
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema)]
 pub struct ConfigResponse {
-    pub token_code_id: Uint128,
     pub token_contract_hash: String,
-    pub token_prng_seed: String,
+    pub token_contract_address: HumanAddr,
+    pub admin: HumanAddr,
     pub exchange_rate: Uint128,
 }
 
