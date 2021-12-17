@@ -1,11 +1,12 @@
-use std::borrow::Borrow;
-
-use cosmwasm_std::{Api, Env, Extern, HandleResponse, InitResponse, Querier, StdResult, Storage};
+use cosmwasm_std::{
+    Api, Binary, Env, Extern, HandleResponse, HumanAddr, InitResponse, Querier, StdError,
+    StdResult, Storage, Uint128,
+};
 
 use crate::{
     constants::RESPONSE_BLOCK_SIZE,
     msg::{HandleMsg, InitMsg},
-    state::{config, State},
+    state::{config, config_read, State},
 };
 use secret_toolkit::snip20;
 
@@ -15,11 +16,12 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
     msg: InitMsg,
 ) -> StdResult<InitResponse> {
     let state = State {
-        accepted_token: msg.accepted_token,
+        accepted_token: msg.accepted_token.clone(),
         admin: Some(msg.admin.unwrap_or(env.message.sender)),
-        viewing_key: msg.viewing_key,
+        viewing_key: msg.viewing_key.clone(),
         last_fed: env.block.time,
         allowed_feed_timespan: msg.allowed_feed_timespan,
+        total_saturation_time: msg.total_saturation_time,
     };
     config(&mut deps.storage).save(&state)?;
 
@@ -45,10 +47,42 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
 }
 
 pub fn handle<S: Storage, A: Api, Q: Querier>(
-    _deps: &mut Extern<S, A, Q>,
-    _env: Env,
-    _msg: HandleMsg,
+    deps: &mut Extern<S, A, Q>,
+    env: Env,
+    msg: HandleMsg,
 ) -> StdResult<HandleResponse> {
+    match msg {
+        HandleMsg::Recieve {
+            from, amount, msg, ..
+        } => try_feed(deps, env, from, amount, msg),
+    }
+}
+
+pub fn try_feed<S: Storage, A: Api, Q: Querier>(
+    deps: &mut Extern<S, A, Q>,
+    env: Env,
+    _from: HumanAddr,
+    _amount: Uint128,
+    _msg: Binary,
+) -> StdResult<HandleResponse> {
+    let mut state = config_read(&deps.storage).load()?;
+    if env.message.sender != state.accepted_token.address {
+        return Err(StdError::generic_err(
+            "Only valid Food tokens are accepted. Invalid token sent. ",
+        ));
+    }
+    if state.is_pet_dead(&env) {
+        return Err(StdError::generic_err(
+            "Pet is already dead :(. You forgot to feed it. ",
+        ));
+    }
+    if !state.can_be_fed(&env) {
+        return Err(StdError::generic_err("It's not feeding time yet. "));
+    }
+
+    state.last_fed = env.block.time;
+    config(&mut deps.storage).save(&state)?;
+
     Ok(HandleResponse::default())
 }
 

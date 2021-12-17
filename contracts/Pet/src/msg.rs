@@ -10,8 +10,10 @@ pub struct InitMsg {
     pub accepted_token: SecretToken,
     // ms in epoch time, subtracted from last fed to calculate allowed feeding timespan
     pub allowed_feed_timespan: u64,
+    pub total_saturation_time: u64,
     pub admin: Option<HumanAddr>,
     pub viewing_key: String,
+
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -21,7 +23,7 @@ pub enum HandleMsg {
     Recieve {
         sender: HumanAddr,
         from: HumanAddr,
-        amunt: Uint128,
+        amount: Uint128,
         msg: Binary,
     },
 }
