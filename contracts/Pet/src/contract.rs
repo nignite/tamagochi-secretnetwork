@@ -65,7 +65,7 @@ pub fn try_feed<S: Storage, A: Api, Q: Querier>(
     env: Env,
     _from: HumanAddr,
     amount: Uint128,
-    _msg: Binary,
+    _msg: Option<Binary>,
 ) -> StdResult<HandleResponse> {
     let mut state = config_read(&deps.storage).load()?;
     if env.message.sender != state.accepted_token.address {

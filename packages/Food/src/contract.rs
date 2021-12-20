@@ -938,7 +938,7 @@ fn try_add_receiver_api_callback<S: ReadonlyStorage>(
     if let Some(receiver_hash) = recipient_code_hash {
         let receiver_msg = Snip20ReceiveMsg::new(sender, from, amount, memo, msg);
         let callback_msg = receiver_msg.into_cosmos_msg(receiver_hash, recipient)?;
-
+        
         messages.push(callback_msg);
         return Ok(());
     }
