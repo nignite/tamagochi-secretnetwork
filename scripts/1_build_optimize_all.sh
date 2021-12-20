@@ -13,7 +13,6 @@ for DIR in contracts packages; do
             (
                 cd "$D"
                 echo "Building $D"
-                cargo build --release --target wasm32-unknown-unknown
                 echo "Building complete"
 
                 echo "Optimzing $D"
@@ -23,9 +22,11 @@ for DIR in contracts packages; do
                      enigmampc/secret-contract-optimizer:1.0.5
 
                 echo "Optimizing complete"    
-
                 echo "Copying artifacts"
-                cp *.wasm.gz ../../artifacts/
+                name = $($D | tr "/")
+                cargo build --release --target wasm32-unknown-unknown
+                cp *.wasm.gz artifacts/"$name".wasm.gz
+                echo "Copying complete"
             )
         fi
     done
