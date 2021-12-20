@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -o errexit -o nounset -o pipefail
 command -v shellcheck > /dev/null && shellcheck "$0"
 
@@ -13,7 +13,6 @@ for DIR in contracts packages; do
             (
                 cd "$D"
                 BASENAME="$(basename "$D")"
-                echo $BASENAME
                 echo "Building $D"
                 cargo build --release --target wasm32-unknown-unknown
                 echo "Building complete"
