@@ -14,7 +14,7 @@ for DIR in contracts packages; do
             (
                 cd "$D"
                 echo "Building $D"
-                cargo wasm 
+                cargo build --release --target wasm32-unknown-unknown
                 echo "Building complete"
 
                 echo "Optimzing $D"
