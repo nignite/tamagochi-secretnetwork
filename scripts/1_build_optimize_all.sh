@@ -3,9 +3,8 @@ set -o errexit -o nounset -o pipefail
 command -v shellcheck > /dev/null && shellcheck "$0"
 
 
+rm -rf artifacts; mkdir artifacts
 echo "Building  and optimizing contracts"
-
-# iterate over all folders in contracts and packages dir then cnd and run cargo wasm
 
 
 for DIR in contracts packages; do
@@ -24,6 +23,9 @@ for DIR in contracts packages; do
                      enigmampc/secret-contract-optimizer:1.0.5
 
                 echo "Optimizing complete"    
+
+                echo "Copying artifacts"
+                cp *.wasm.gz ../../artifacts/
             )
         fi
     done
