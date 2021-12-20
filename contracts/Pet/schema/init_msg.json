@@ -3,12 +3,57 @@
   "title": "InitMsg",
   "type": "object",
   "required": [
-    "count"
+    "accepted_token",
+    "allowed_feed_timespan",
+    "total_saturation_time",
+    "viewing_key"
   ],
   "properties": {
-    "count": {
+    "accepted_token": {
+      "$ref": "#/definitions/SecretToken"
+    },
+    "admin": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "allowed_feed_timespan": {
       "type": "integer",
-      "format": "int32"
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "total_saturation_time": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "viewing_key": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "HumanAddr": {
+      "type": "string"
+    },
+    "SecretToken": {
+      "type": "object",
+      "required": [
+        "address",
+        "hash"
+      ],
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        "hash": {
+          "type": "string"
+        }
+      }
     }
   }
 }

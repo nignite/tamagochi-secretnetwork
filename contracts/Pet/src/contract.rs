@@ -54,7 +54,7 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
     msg: HandleMsg,
 ) -> StdResult<HandleResponse> {
     match msg {
-        HandleMsg::Recieve {
+        HandleMsg::Receive {
             from, amount, msg, ..
         } => try_feed(deps, env, from, amount, msg),
     }

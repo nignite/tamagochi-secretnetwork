@@ -317,7 +317,6 @@ dependencies = [
  "cosmwasm-schema",
  "cosmwasm-std",
  "cosmwasm-storage",
- "food",
  "schemars",
  "secret-toolkit",
  "serde",

@@ -19,7 +19,7 @@ pub struct InitMsg {
 #[serde(rename_all = "snake_case")]
 pub enum HandleMsg {
     //recieved food from the food/snip20 contract
-    Recieve {
+    Receive {
         sender: HumanAddr,
         from: HumanAddr,
         amount: Uint128,
