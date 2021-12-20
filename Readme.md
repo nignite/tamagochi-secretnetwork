@@ -1,5 +1,8 @@
 # Tamagotchi
+
 The traditional, Japanese, handheld digital pet. Recreated using smart contracts.
+The point of the game is to keep the pet alive by feeding them.
+This is done using Food(snip20) tokens which the users sends to the Pet contract. Feeding can only be done after a certain time to avoid constant feeding. To purchase Food tokens, a BuyFood message must be sent over to the Market contract. This will mint tokens for the user based on the preset exchange ratio.
 
 ## Contracts
 
@@ -72,13 +75,22 @@ allowed_feed_timespan - time in seconds after which the pet can be fed.
 _Feeding timespan should be smaller than saturation time. For example, if saturation time is 4h and allowed feed timespan is 3h, the pet can be fed after 3h but before it dies at the 4h mark._
 
 ### Messages
+
 #### Food
+
 This contract is a fork of the official SNIP-20 implementation. All the messages are the same.
+
 #### Market
-| Message |
-|---------|
-|
-|
-|
 
+| Message     | Description                                                        |
+| ----------- | ------------------------------------------------------------------ |
+| BuyFood     | Takes the sent funds and mints food tokens according to the ratio  |
+| Config      | Returns the constants set for the contract. (exchange rate, etc..) |
+| TotalRaised | The amount of funds the contract currently holds                   |
 
+#### Pet
+
+| Message | Description                                                            |
+| ------- | ---------------------------------------------------------------------- |
+| Receive | Callback message sent from the Food contract once someone sends tokens |
+| LastFed | Returns the timestamp at which the pet was last fed. (Unix time)       |
