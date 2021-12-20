@@ -1,5 +1,7 @@
+use std::vec;
+
 use cosmwasm_std::{
-    to_binary, Api, Binary, Env, Extern, HandleResponse, HumanAddr, InitResponse, Querier,
+    log, to_binary, Api, Binary, Env, Extern, HandleResponse, HumanAddr, InitResponse, Querier,
     QueryResult, StdError, StdResult, Storage, Uint128,
 };
 
@@ -62,7 +64,7 @@ pub fn try_feed<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
     env: Env,
     _from: HumanAddr,
-    _amount: Uint128,
+    amount: Uint128,
     _msg: Binary,
 ) -> StdResult<HandleResponse> {
     let mut state = config_read(&deps.storage).load()?;
@@ -83,7 +85,15 @@ pub fn try_feed<S: Storage, A: Api, Q: Querier>(
     state.last_fed = env.block.time;
     config(&mut deps.storage).save(&state)?;
 
-    Ok(HandleResponse::default())
+    Ok(HandleResponse {
+        messages: vec![],
+        data: None,
+        log: vec![
+            log("action", "feed"),
+            log("food_amount", amount),
+            log("time", env.block.time),
+        ],
+    })
 }
 
 pub fn query<S: Storage, A: Api, Q: Querier>(
