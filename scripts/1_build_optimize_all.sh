@@ -18,10 +18,11 @@ for DIR in contracts packages; do
                 echo "Building complete"
 
                 echo "Optimzing $D"
-                docker run -it --rm \
-                     -p 26657:26657 -p 26656:26656 -p 1337:1337 \
-                     -v $(pwd):/root/code \
-                     --name secretdev enigmampc/secret-network-sw-dev
+                docker run --rm -v "$(pwd)":/contract \
+                    --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
+                    --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
+                     enigmampc/secret-contract-optimizer  
+
                 echo "Optimizing complete"    
             )
         fi
