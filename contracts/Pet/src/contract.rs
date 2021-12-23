@@ -85,8 +85,16 @@ pub fn try_feed<S: Storage, A: Api, Q: Querier>(
     state.last_fed = env.block.time;
     config(&mut deps.storage).save(&state)?;
 
+    let burn_msg = snip20::burn_msg(
+        amount,
+        None,
+        RESPONSE_BLOCK_SIZE,
+        state.accepted_token.hash.clone(),
+        state.accepted_token.address.clone(),
+    )?;
+
     Ok(HandleResponse {
-        messages: vec![],
+        messages: vec![burn_msg],
         data: None,
         log: vec![
             log("action", "feed"),
