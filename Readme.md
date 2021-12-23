@@ -12,6 +12,10 @@ This is done using Food(snip20) tokens which the users sends to the Pet contract
 | [`Food`](packages/Food)      | Snip-20 contract, used to create the token     |
 | [`Pet`](contracts/Pet)       | Tamagotchi like interface through the contract |
 
+## Frontend
+
+See [`Frontend`](frontend) folder
+
 ## Building the contracts
 
 To get started, there is a bash script included to build and optimize all contracts. Simply run:
@@ -67,6 +71,10 @@ You can use a local node or connect to a testnet. These contracts have been test
    "total_saturation_time": <time in secconds>,
    "viewing_key": "<some secret>"
 }
+```
+4. Add the Market contract as a valid minter
+```
+   secretcli tx compute execute FOOD_ADDR '{"add_minters": {"minters":[MARKET_ADDR]}}' --from WALLET
 ```
 
 total_saturation_time - total time a pet can last in seconds
