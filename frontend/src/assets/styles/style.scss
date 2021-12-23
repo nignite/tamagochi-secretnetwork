@@ -53,6 +53,20 @@ main {
 .console {
   position: relative;
   width: 26rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg{
+    position: absolute;
+  }
+}
+.shadow{
+  transform: skewY(343deg) scaleY(55%) translateX(6rem) scaleX(74%);
+  opacity: 0.4;
+  filter: blur(5px);
+  width: 40rem;
+  margin-top: 6.5rem;
 }
 .bar {
   position: absolute;
@@ -99,4 +113,9 @@ main {
   color: white;
   font-weight: bold;
   text-shadow: 3px 4px 17px rgba(0, 0, 0, 0.966);
+}
+@media screen and (max-width: 675px){
+  .shadow{
+    display: none;
+  }
 }
