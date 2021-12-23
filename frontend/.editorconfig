@@ -1,0 +1,14 @@
+# 告诉编辑器这是最顶层的（不要再向上找了） EditorConfig 文件
+root = true
+
+[*]
+charset = utf-8        # 设置编码为utf-8
+indent_style = space   # 缩进方式为空格
+indent_size = 2        # 缩进大小为2个字符
+end_of_line = lf       # 换行符，可选"lf"、"cr"、"crlf"
+trim_trailing_whitespace = true  # 删除行尾空格
+insert_final_newline = true      # 始终在文件末尾插入一个新行
+
+[*.md]
+insert_final_newline = false
+trim_trailing_whitespace = false

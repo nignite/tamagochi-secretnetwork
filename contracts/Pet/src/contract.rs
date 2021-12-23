@@ -102,6 +102,7 @@ pub fn query<S: Storage, A: Api, Q: Querier>(
 ) -> StdResult<Binary> {
     match msg {
         QueryMsg::LastFed {} => query_last_fed(&deps.storage),
+        QueryMsg::PetInfo {} => query_pet_info(&deps.storage),
     }
 }
 
@@ -111,6 +112,13 @@ fn query_last_fed<S: Storage>(storage: &S) -> QueryResult {
         timestamp: state.last_fed,
     })
 }
-
+fn query_pet_info<S: Storage>(storage: &S) -> QueryResult {
+    let state = config_read(storage).load()?;
+    to_binary(&QueryResponse::PetInfoResponse {
+        allowed_feed_timespan: state.allowed_feed_timespan,
+        total_saturation_time: state.total_saturation_time,
+        accepted_token: state.accepted_token,
+    })
+}
 #[cfg(test)]
 mod tests {}
