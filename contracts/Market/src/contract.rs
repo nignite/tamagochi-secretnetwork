@@ -116,4 +116,76 @@ pub fn try_buy_food<S: Storage, A: Api, Q: Querier>(
 /* TESTS --------------------------------------------------------------------------------------------------------------------------------------*/
 
 #[cfg(test)]
-mod tests {}
+mod tests {
+    use cosmwasm_std::testing::{mock_dependencies, mock_env, MockApi, MockQuerier, MockStorage};
+    use cosmwasm_std::{
+        coins, from_binary, Extern, InitResponse, QueryRequest, StdResult, Uint128,
+    };
+
+    use crate::contract::query;
+    use crate::msg::{ConfigResponse, HandleMessage, InitMsg, QueryMessage};
+
+    use super::{handle, init};
+
+    fn init_default() -> (
+        StdResult<InitResponse>,
+        Extern<MockStorage, MockApi, MockQuerier>,
+    ) {
+        let mut deps = mock_dependencies(20, &[]);
+        let token = mock_env("snip", &[]);
+        let env = mock_env("instantiator", &[]);
+
+        let init_msg = InitMsg {
+            token_exchange_rate: Uint128(100),
+            token_contract_address: token.contract.address,
+            token_contract_hash: token.contract_code_hash,
+            admin: None,
+        };
+        (init(&mut deps, env.clone(), init_msg), deps)
+    }
+
+    #[test]
+    fn test_init() {
+        let (init_result, mut _deps) = init_default();
+        assert!(
+            init_result.is_ok(),
+            "Init failed: {}",
+            init_result.err().unwrap()
+        );
+    }
+    #[test]
+    fn test_buy_with_coins() {
+        let mut deps = mock_dependencies(20, &[]);
+        let token = mock_env("snip", &[]);
+        let env = mock_env("instantiator", &coins(1, "uscrt"));
+
+        let init_msg = InitMsg {
+            token_exchange_rate: Uint128(100),
+            token_contract_address: token.contract.address.clone(),
+            token_contract_hash: token.contract_code_hash.clone(),
+            admin: None,
+        };
+        let _res = init(&mut deps, env.clone(), init_msg.clone()).unwrap();
+
+        let msg = HandleMessage::BuyFood {};
+        let _res = handle(&mut deps, env.clone(), msg).unwrap();
+    }
+    #[test]
+    fn test_buy_no_coins() {
+        let mut deps = mock_dependencies(20, &[]);
+        let token = mock_env("snip", &[]);
+        let env = mock_env("instantiator", &[]);
+
+        let init_msg = InitMsg {
+            token_exchange_rate: Uint128(100),
+            token_contract_address: token.contract.address,
+            token_contract_hash: token.contract_code_hash,
+            admin: None,
+        };
+        let _res = init(&mut deps, env.clone(), init_msg).unwrap();
+
+        let msg = HandleMessage::BuyFood {};
+        let res = handle(&mut deps, env, msg);
+        assert!(res.is_err(), "should error");
+    }
+}
