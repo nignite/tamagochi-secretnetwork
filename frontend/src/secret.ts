@@ -56,17 +56,19 @@ const getClient = async () => {
 
 export class SecretAPI {
   private client: SigningCosmWasmClient;
+  private total_saturation_time: number = 0;
   constructor() {
-    getClient().then((client) => {
+    getClient().then(async (client) => {
       this.client = client;
-      this.getPetInfo();
+      const time = await this.getPetInfo();
+      this.total_saturation_time = time;
     });
   }
   async getPetInfo() {
     const response = await this.client.queryContractSmart(config.pet_addr, {
       pet_info: {},
     });
-    console.log(response);
+    return response.PetInfoResponse.total_saturation_time;
   }
   async buyFood(amount: string) {
     const msg = {
@@ -97,10 +99,9 @@ export class SecretAPI {
     const response = await this.client.queryContractSmart(config.pet_addr, msg);
     const last_fed = response.LastFedResponse.timestamp;
     const current_time = Math.floor(Date.now() / 1000);
-    const total_saturation = 4 * 60 * 60;
     const remaining = current_time - last_fed;
     const percentage = Math.ceil(
-      100 - Math.max((remaining / total_saturation) * 100, 0)
+      100 - Math.max((remaining / this.total_saturation_time) * 100, 0)
     );
 
     return percentage;

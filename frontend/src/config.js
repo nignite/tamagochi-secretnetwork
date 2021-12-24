@@ -1,13 +1,14 @@
 const config = {
   mnemonic:
-    "near jealous midnight shoulder brand stock attitude night skill tip swear genre swear nose system resemble like author result bulk segment chest wonder point",
-  rest_api: "http://192.168.0.200:1337",
-  chainid: "secretdev-1",
-  address: "secret1d2eg9rfur4ryenm4yy6pekt6s50fmkqh6xetk9",
-  food_addr: "secret18vd8fpwxzck93qlwghaj6arh4p7c5n8978vsyg",
-  market_addr: "secret10pyejy66429refv3g35g2t7am0was7ya6hvrzf",
-  pet_addr: "secret1sh36qn08g4cqg685cfzmyxqv2952q6r8vqktuh",
-  viewing_key: "api_key_HrvCGo608tpYAs/gl/sLzCB/PZUtmrZeK8CFFtnafco="
+    "journey wild appear detail eyebrow inner moral spread title green twice quantum length unusual rely shaft canvas sustain emotion rabbit liar actor disorder dress",
+  rest_api: "https://api.pulsar.griptapejs.com/",
+  rpc_api: "https://testnet.securesecrets.org:26657/",
+  chainid: "pulsar-2",
+  address: "secret19d5kyzrdgaltsh6pl9svm9hvunffy3ge0njlq2",
+  food_addr: "secret153prsqhskssqarz7guwszehdpgf74g2n40up0f",
+  market_addr: "secret1jskvqghxl0r024dtgpe2lnalmcpgy5j37zs6u2",
+  pet_addr: "secret18j00x0qt38unlapsk3e8m9feg7adsl9su00wan",
+  viewing_key: "api_key_UNkhX6E508u+GF7nNYuP6N+TPfj0Vo2JaUljSCVAJK8="
 };
 
 export { config };

@@ -1,6 +1,7 @@
 //@ts-nocheck
 import * as THREE from "three"
-import { Fox } from "./Fox"
+import { Fox } from "./3D/Fox"
+import { Heart } from "./3D/Heart"
 import { OrbitControls } from './OrbitControls'
 import { SecretAPI } from "./secret"
 const dom = {
@@ -17,6 +18,7 @@ const dom = {
 }
 const screen = document.getElementById("screen")
 const scene = new THREE.Scene()
+THREE.Cache.enabled = true
 const camera = new THREE.PerspectiveCamera(60, 241 / 221, 0.1, 1000)
 const renderer = new THREE.WebGLRenderer()
 const node = new SecretAPI()
@@ -58,7 +60,7 @@ new THREE.CubeTextureLoader()
     )
 
 const fox = new Fox(scene, 0, 0)
-camera.position.z = 6
+camera.position.z = 7
 camera.position.y = 1
 const animate = function () {
     requestAnimationFrame(animate)
@@ -113,7 +115,6 @@ const updateBalance = async () => {
 }
 const updateSaturationLevel = async () => {
     const percentage = await node.getSaturationLevel()
-    console.log(percentage)
     dom.saturation.innerHTML = `${percentage}%`
 }
 

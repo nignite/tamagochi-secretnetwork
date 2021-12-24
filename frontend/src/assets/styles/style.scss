@@ -57,11 +57,11 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  svg{
+  svg {
     position: absolute;
   }
 }
-.shadow{
+.shadow {
   transform: skewY(343deg) scaleY(55%) translateX(6rem) scaleX(74%);
   opacity: 0.4;
   filter: blur(5px);
@@ -114,8 +114,12 @@ main {
   font-weight: bold;
   text-shadow: 3px 4px 17px rgba(0, 0, 0, 0.966);
 }
-@media screen and (max-width: 675px){
-  .shadow{
+@media screen and (max-width: 675px) {
+  .shadow {
     display: none;
   }
+}
+
+#btn1 {
+  background-color: #f4e4a8;
 }

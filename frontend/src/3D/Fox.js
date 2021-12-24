@@ -1,14 +1,16 @@
 import * as THREE from "three";
-import { OBJLoader } from "./OBJLoader";
-import { MTLLoader } from "./MTLLoader";
+import { OBJLoader } from "../OBJLoader";
+import { MTLLoader } from "../MTLLoader";
 const manager = new THREE.LoadingManager();
 const loader = new OBJLoader(manager)
 const materialLoader = new MTLLoader(manager)
+import { Heart } from "./Heart";
 export class Fox {
     scene
     x = 0
     y = 0
     rotation = 0
+    hearts = []
     floatAnimation = {
         isRunning: true,
         duration: msToDuration(1000),
@@ -30,7 +32,7 @@ export class Fox {
         speeds: {
             y: 0.1,
             x: 0,
-            rotation: 0.016
+            rotation: 0
         }
     }
     object
@@ -53,12 +55,21 @@ export class Fox {
     animate = () => {
         const { object, floatAnimation, feedAnimation } = this
         if (!object) return
+        this.hearts.forEach(heart => {
+            heart.animate()
+        })
         if (floatAnimation.isRunning) this.floatAnimationTick()
-        if (feedAnimation.isRunning) this.feedAnimationTick()
     }
     feed = () => {
+        this.hearts.forEach((heart) => {
+            this.scene.remove(heart.object)
+        })
+        this.hearts  = new Array(3).fill(0).map(() => {
+            const x = random(-3,3)
+            const heart = new Heart(this.scene,x,random(-0.2,0.3),2)
+            return heart
+        })
         this.feedAnimation.isRunning = true
-        this.floatAnimation.isRunning = false
     }
     finishedAnimation = (anim) => {
         anim.direction = 1
@@ -99,6 +110,9 @@ export class Fox {
     }
 }
 
+function random(min,max){
+    return Math.random() * (max - min) + min
+}
 
 function msToDuration(ms) {
     return Math.floor(ms / (1000 / 60))
