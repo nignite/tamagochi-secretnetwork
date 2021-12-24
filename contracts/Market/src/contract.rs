@@ -118,12 +118,9 @@ pub fn try_buy_food<S: Storage, A: Api, Q: Querier>(
 #[cfg(test)]
 mod tests {
     use cosmwasm_std::testing::{mock_dependencies, mock_env, MockApi, MockQuerier, MockStorage};
-    use cosmwasm_std::{
-        coins, from_binary, Extern, InitResponse, QueryRequest, StdResult, Uint128,
-    };
+    use cosmwasm_std::{coins, Extern, InitResponse, StdResult, Uint128};
 
-    use crate::contract::query;
-    use crate::msg::{ConfigResponse, HandleMessage, InitMsg, QueryMessage};
+    use crate::msg::{HandleMessage, InitMsg};
 
     use super::{handle, init};
 
