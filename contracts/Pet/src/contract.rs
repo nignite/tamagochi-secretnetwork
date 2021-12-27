@@ -133,11 +133,30 @@ fn query_pet_info<S: Storage>(storage: &S) -> QueryResult {
 }
 #[cfg(test)]
 mod tests {
-    use cosmwasm_std::testing::{mock_dependencies, mock_env};
+    use cosmwasm_std::{
+        testing::{mock_dependencies, mock_env, MOCK_CONTRACT_ADDR},
+        HumanAddr,
+    };
+
+    use crate::{msg::InitMsg, state::SecretToken};
+
+    use super::init;
 
     #[test]
     fn test_init() {
-        let _deps = mock_dependencies(20, &[]);
-        let _env = mock_env("sender", &[]);
+        let mut deps = mock_dependencies(20, &[]);
+        let env = mock_env("sender", &[]);
+        let msg = InitMsg {
+            accepted_token: SecretToken {
+                address: HumanAddr::from(MOCK_CONTRACT_ADDR),
+                hash: "".to_string(),
+                viewing_key: "supersecret".to_string(),
+            },
+            admin: None,
+            allowed_feed_timespan: 3600,
+            total_saturation_time: 14200,
+        };
+
+        let _res = init(&mut deps, env.clone(), msg);
     }
 }
