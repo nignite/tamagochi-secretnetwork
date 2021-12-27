@@ -114,6 +114,7 @@ pub fn query<S: Storage, A: Api, Q: Querier>(
     match msg {
         QueryMsg::LastFed {} => query_last_fed(&deps.storage),
         QueryMsg::PetInfo {} => query_pet_info(&deps.storage),
+        QueryMsg::AcceptedToken {} => query_accepted_token(&deps.storage),
     }
 }
 
@@ -123,12 +124,18 @@ fn query_last_fed<S: Storage>(storage: &S) -> QueryResult {
         timestamp: state.pet.last_fed,
     })
 }
+fn query_accepted_token<S: Storage>(storage: &S) -> QueryResult {
+    let state = config_read(storage).load()?;
+    to_binary(&QueryResponse::AcceptedToken {
+        address: state.accepted_token.address,
+        hash: state.accepted_token.hash,
+    })
+}
 fn query_pet_info<S: Storage>(storage: &S) -> QueryResult {
     let state = config_read(storage).load()?;
     to_binary(&QueryResponse::PetInfoResponse {
         allowed_feed_timespan: state.pet.allowed_feed_timespan,
         total_saturation_time: state.pet.total_saturation_time,
-        accepted_token: state.accepted_token,
     })
 }
 #[cfg(test)]

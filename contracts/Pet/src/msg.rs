@@ -31,6 +31,7 @@ pub enum HandleMsg {
 pub enum QueryMsg {
     LastFed {},
     PetInfo {},
+    AcceptedToken {},
 }
 #[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema)]
 pub enum QueryResponse {
@@ -40,6 +41,9 @@ pub enum QueryResponse {
     PetInfoResponse {
         allowed_feed_timespan: u64,
         total_saturation_time: u64,
-        accepted_token: SecretToken,
+    },
+    AcceptedToken {
+        address: HumanAddr,
+        hash: String,
     },
 }
