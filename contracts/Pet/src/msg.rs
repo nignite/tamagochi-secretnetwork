@@ -12,7 +12,6 @@ pub struct InitMsg {
     pub allowed_feed_timespan: u64,
     pub total_saturation_time: u64,
     pub admin: Option<HumanAddr>,
-    pub viewing_key: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]

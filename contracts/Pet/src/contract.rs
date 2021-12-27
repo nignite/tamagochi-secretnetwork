@@ -8,7 +8,7 @@ use cosmwasm_std::{
 use crate::{
     constants::RESPONSE_BLOCK_SIZE,
     msg::{HandleMsg, InitMsg, QueryMsg, QueryResponse},
-    state::{config, config_read, State},
+    state::{config, config_read, Pet, State},
 };
 use secret_toolkit::snip20;
 
@@ -20,10 +20,11 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
     let state = State {
         accepted_token: msg.accepted_token.clone(),
         admin: Some(msg.admin.unwrap_or(env.message.sender)),
-        viewing_key: msg.viewing_key.clone(),
-        last_fed: env.block.time,
-        allowed_feed_timespan: msg.allowed_feed_timespan,
-        total_saturation_time: msg.total_saturation_time,
+        pet: Pet {
+            last_fed: env.block.time,
+            allowed_feed_timespan: msg.allowed_feed_timespan,
+            total_saturation_time: msg.total_saturation_time,
+        },
     };
     config(&mut deps.storage).save(&state)?;
 
@@ -35,7 +36,7 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
         msg.accepted_token.address.clone(),
     )?;
     let view_key_msg = snip20::set_viewing_key_msg(
-        msg.viewing_key,
+        msg.accepted_token.viewing_key,
         None,
         RESPONSE_BLOCK_SIZE,
         msg.accepted_token.hash.clone(),
@@ -68,21 +69,23 @@ pub fn try_feed<S: Storage, A: Api, Q: Querier>(
     _msg: Option<Binary>,
 ) -> StdResult<HandleResponse> {
     let mut state = config_read(&deps.storage).load()?;
+    let mut pet: &mut Pet = &mut state.pet;
+
     if env.message.sender != state.accepted_token.address {
         return Err(StdError::generic_err(
             "Only valid Food tokens are accepted. Invalid token sent. ",
         ));
     }
-    if state.is_pet_dead(&env) {
+    if pet.is_dead(&env) {
         return Err(StdError::generic_err(
             "Pet is already dead :(. You forgot to feed it. ",
         ));
     }
-    if !state.can_be_fed(&env) {
+    if !pet.can_be_fed(&env) {
         return Err(StdError::generic_err("It's not feeding time yet. "));
     }
 
-    state.last_fed = env.block.time;
+    pet.last_fed = env.block.time;
     config(&mut deps.storage).save(&state)?;
 
     let burn_msg = snip20::burn_msg(
@@ -117,16 +120,24 @@ pub fn query<S: Storage, A: Api, Q: Querier>(
 fn query_last_fed<S: Storage>(storage: &S) -> QueryResult {
     let state = config_read(storage).load()?;
     to_binary(&QueryResponse::LastFedResponse {
-        timestamp: state.last_fed,
+        timestamp: state.pet.last_fed,
     })
 }
 fn query_pet_info<S: Storage>(storage: &S) -> QueryResult {
     let state = config_read(storage).load()?;
     to_binary(&QueryResponse::PetInfoResponse {
-        allowed_feed_timespan: state.allowed_feed_timespan,
-        total_saturation_time: state.total_saturation_time,
+        allowed_feed_timespan: state.pet.allowed_feed_timespan,
+        total_saturation_time: state.pet.total_saturation_time,
         accepted_token: state.accepted_token,
     })
 }
 #[cfg(test)]
-mod tests {}
+mod tests {
+    use cosmwasm_std::testing::{mock_dependencies, mock_env};
+
+    #[test]
+    fn test_init() {
+        let _deps = mock_dependencies(20, &[]);
+        let _env = mock_env("sender", &[]);
+    }
+}
