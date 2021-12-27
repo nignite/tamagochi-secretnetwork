@@ -157,6 +157,6 @@ mod tests {
             total_saturation_time: 14200,
         };
 
-        let _res = init(&mut deps, env.clone(), msg);
+        let _res = init(&mut deps, env.clone(), msg).unwrap();
     }
 }
