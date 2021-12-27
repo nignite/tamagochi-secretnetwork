@@ -72,7 +72,9 @@ You can use a local node or connect to a testnet. These contracts have been test
    "viewing_key": "<some secret>"
 }
 ```
+
 4. Add the Market contract as a valid minter
+
 ```
    secretcli tx compute execute FOOD_ADDR '{"add_minters": {"minters":[MARKET_ADDR]}}' --from WALLET
 ```
@@ -98,7 +100,8 @@ This contract is a fork of the official SNIP-20 implementation. All the messages
 
 #### Pet
 
-| Message | Description                                                            |
-| ------- | ---------------------------------------------------------------------- |
-| Receive | Callback message sent from the Food contract once someone sends tokens |
-| LastFed | Returns the timestamp at which the pet was last fed. (Unix time)       |
+| Message       | Description                                                            |
+| ------------- | ---------------------------------------------------------------------- |
+| Receive       | Callback message sent from the Food contract once someone sends tokens |
+| LastFed       | Returns the timestamp at which the pet was last fed. (Unix time)       |
+| AcceptedToken | Returns info about the token which the contracts accepts payments from |
