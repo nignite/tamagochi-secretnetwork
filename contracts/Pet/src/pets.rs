@@ -55,6 +55,8 @@ pub fn get_pets<A: Api, S: ReadonlyStorage>(
         .take(page_size as _)
         .collect();
 
+    
+        
     pets.map(|pets| (pets, store.len() as u64))
 }
 pub fn get_pet<A: Api, S: ReadonlyStorage>(

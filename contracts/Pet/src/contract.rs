@@ -2,16 +2,19 @@ use std::vec;
 
 use cosmwasm_std::{
     log, to_binary, Api, Binary, Env, Extern, HandleResponse, HumanAddr, InitResponse, Querier,
-    StdResult, Storage, Uint128,
+    QueryResult, ReadonlyStorage, StdResult, Storage, Uint128,
 };
 
 use crate::{
     constants::RESPONSE_BLOCK_SIZE,
-    msg::{HandleAnswer, HandleMsg, InitMsg, QueryMsg},
-    pets::{append_pet, get_pet, Pet},
-    state::{Config, ContractConfig},
+    msg::{HandleAnswer, HandleMsg, InitMsg, QueryAnswer, QueryMsg},
+    pets::{append_pet, get_pet, get_pets, Pet},
+    state::{Config, ContractConfig, ReadOnlyConfig},
 };
 use secret_toolkit::snip20;
+
+const DEFAULT_PAGE: u32 = 0;
+const DEFAULT_PAGE_SIZE: u32 = 30;
 
 pub fn init<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
@@ -90,8 +93,6 @@ pub fn try_create_pet<S: Storage, A: Api, Q: Querier>(
         sender,
     )?;
 
-    println!("{:?}", get_pet(&deps.api, &deps.storage, sender, id)?);
-
     Ok(HandleResponse {
         data: Some(to_binary(&HandleAnswer::CreatePet { id, name })?),
         log: vec![log("action", "create_pet"), log("created_id", id)],
@@ -118,37 +119,73 @@ pub fn try_feed<S: Storage, A: Api, Q: Querier>(
 }
 
 pub fn query<S: Storage, A: Api, Q: Querier>(
-    _deps: &Extern<S, A, Q>,
-    _msg: QueryMsg,
+    deps: &Extern<S, A, Q>,
+    msg: QueryMsg,
 ) -> StdResult<Binary> {
-    // match msg {
-    //     QueryMsg::LastFed {} => query_last_fed(&deps.storage),
-    //     QueryMsg::PetInfo {} => query_pet_info(&deps.storage),
-    //     QueryMsg::AcceptedToken {} => query_accepted_token(&deps.storage),
-    // }
-    to_binary(&String::from("testing"))
+    match msg {
+        QueryMsg::LastFed { id, owner } => query_last_fed(&deps, id, owner),
+        QueryMsg::Pet { id, owner } => query_pet_info(&deps, id, owner),
+        QueryMsg::AcceptedToken {} => query_accepted_token(&deps.storage),
+        QueryMsg::Pets {
+            owner,
+            page_size,
+            page,
+        } => query_pets(
+            &deps,
+            owner,
+            page.unwrap_or(DEFAULT_PAGE),
+            page_size.unwrap_or(DEFAULT_PAGE_SIZE),
+        ),
+    }
 }
 
-// fn query_last_fed<S: Storage>(storage: &S) -> QueryResult {
-//     let state = config_read(storage).load()?;
-//     to_binary(&QueryResponse::LastFedResponse {
-//         timestamp: state.pet.last_fed,
-//     })
-// }
-// fn query_accepted_token<S: Storage>(storage: &S) -> QueryResult {
-//     let state = config_read(storage).load()?;
-//     to_binary(&QueryResponse::AcceptedToken {
-//         address: state.accepted_token.address,
-//         hash: state.accepted_token.hash,
-//     })
-// }
-// fn query_pet_info<S: Storage>(storage: &S) -> QueryResult {
-//     let state = config_read(storage).load()?;
-//     to_binary(&QueryResponse::PetInfoResponse {
-//         allowed_feed_timespan: state.pet.allowed_feed_timespan,
-//         total_saturation_time: state.pet.total_saturation_time,
-//     })
-// }
+fn query_last_fed<S: Storage, A: Api, Q: Querier>(
+    deps: &Extern<S, A, Q>,
+    id: u64,
+    owner: HumanAddr,
+) -> QueryResult {
+    let canonical = deps.api.canonical_address(&owner)?;
+    let pet = get_pet(&deps.api, &deps.storage, &canonical, id)?;
+    to_binary(&QueryAnswer::LastFedResponse {
+        timestamp: pet.last_fed,
+    })
+}
+fn query_pet_info<S: Storage, A: Api, Q: Querier>(
+    deps: &Extern<S, A, Q>,
+    id: u64,
+    owner: HumanAddr,
+) -> QueryResult {
+    let canonical = deps.api.canonical_address(&owner)?;
+    let pet = get_pet(&deps.api, &deps.storage, &canonical, id)?;
+    to_binary(&QueryAnswer::PetInfoResponse {
+        id: pet.id,
+        name: pet.name,
+        allowed_feed_timespan: pet.allowed_feed_timespan,
+        total_saturation_time: pet.total_saturation_time,
+    })
+}
+fn query_pets<S: Storage, A: Api, Q: Querier>(
+    deps: &Extern<S, A, Q>,
+    owner: HumanAddr,
+    page: u32,
+    page_size: u32,
+) -> QueryResult {
+    let canonical = deps.api.canonical_address(&owner)?;
+    let (pets, len) = get_pets(&deps.api, &deps.storage, &canonical, page, page_size)?;
+    for pet in &pets {
+        println!("{:?}", pet)
+    }
+    to_binary(&QueryAnswer::Pets { pets, size: len })
+}
+fn query_accepted_token<S: ReadonlyStorage>(storage: &S) -> QueryResult {
+    let store = ReadOnlyConfig::from_storage(storage);
+    let config = store.state()?;
+
+    to_binary(&QueryAnswer::AcceptedToken {
+        address: config.accepted_token.address,
+        hash: config.accepted_token.hash,
+    })
+}
 #[cfg(test)]
 mod tests {
     use cosmwasm_std::{
@@ -157,9 +194,13 @@ mod tests {
         HumanAddr,
     };
 
-    use crate::{msg::HandleAnswer, msg::HandleMsg, msg::InitMsg, state::SecretToken};
+    use crate::{
+        msg::HandleMsg,
+        msg::{InitMsg, QueryAnswer, QueryMsg},
+        state::SecretToken,
+    };
 
-    use super::{handle, init};
+    use super::{handle, init, query};
 
     #[test]
     fn test_init() {
@@ -188,16 +229,36 @@ mod tests {
             },
             admin: None,
         };
-
         let _res = init(&mut deps, env.clone(), msg).unwrap();
 
+        //create a pet
         let create_pet_msg = HandleMsg::CreatePet {
             allowed_feed_timespan: 420,
             total_saturation_time: 14700,
             name: String::from("work or delete"),
         };
-        let res = handle(&mut deps, env, create_pet_msg).unwrap();
-        let data = from_binary::<HandleAnswer>(&res.data.unwrap());
-        println!("{:?}", data)
+        let _res = handle(&mut deps, env.clone(), create_pet_msg).unwrap();
+
+        //query to check if it was created
+        let query_one_msg = QueryMsg::Pet {
+            id: 1,
+            owner: env.message.sender.clone(),
+        };
+        let res = query(&deps, query_one_msg).unwrap();
+        let answer = from_binary::<QueryAnswer>(&res).unwrap();
+
+        //created pet id should be 1 as its the first one.
+        let status = match answer {
+            QueryAnswer::PetInfoResponse {
+                allowed_feed_timespan: _,
+                total_saturation_time: _,
+                name: _,
+                id,
+            } => {
+                matches!(id, 1)
+            }
+            _ => panic!("Invalid message returned. "),
+        };
+        assert!(status);
     }
 }
