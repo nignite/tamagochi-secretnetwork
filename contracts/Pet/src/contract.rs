@@ -1,14 +1,14 @@
 use std::vec;
 
 use cosmwasm_std::{
-    log, to_binary, Api, Binary, Env, Extern, HandleResponse, HumanAddr, InitResponse, Querier,
-    QueryResult, ReadonlyStorage, StdResult, Storage, Uint128,
+    from_binary, log, to_binary, Api, Binary, Env, Extern, HandleResponse, HumanAddr, InitResponse,
+    Querier, QueryResult, ReadonlyStorage, StdError, StdResult, Storage, Uint128,
 };
 
 use crate::{
     constants::RESPONSE_BLOCK_SIZE,
     msg::{HandleAnswer, HandleMsg, InitMsg, QueryAnswer, QueryMsg},
-    pets::{append_pet, get_pet, get_pets, Pet},
+    pets::{append_pet, get_pet, get_pets, update_pet, Pet, PetState},
     state::{Config, ContractConfig, ReadOnlyConfig},
 };
 use secret_toolkit::snip20;
@@ -89,6 +89,7 @@ pub fn try_create_pet<S: Storage, A: Api, Q: Querier>(
             total_saturation_time,
             name: name.clone(),
             last_fed: env.block.time,
+            life_state: PetState::Alive {},
         },
         sender,
     )?;
@@ -101,19 +102,45 @@ pub fn try_create_pet<S: Storage, A: Api, Q: Querier>(
 }
 
 pub fn try_feed<S: Storage, A: Api, Q: Querier>(
-    _deps: &mut Extern<S, A, Q>,
+    deps: &mut Extern<S, A, Q>,
     env: Env,
-    _from: HumanAddr,
+    from: HumanAddr,
     amount: Uint128,
-    _msg: Option<Binary>,
+    msg: Option<Binary>,
 ) -> StdResult<HandleResponse> {
+    //user should include id in the SEND message
+    let store = ReadOnlyConfig::from_storage(&deps.storage);
+    let config = store.state()?;
+    let id = from_binary::<u64>(&msg.unwrap())?;
+    let canonical_from = deps.api.canonical_address(&from)?;
+    let current_timestamp = env.block.time;
+    if env.message.sender != config.accepted_token.address {
+        return Err(StdError::unauthorized());
+    }
+
+    let mut pet = get_pet(&deps.api, &deps.storage, &canonical_from, id)?;
+
+    if pet.is_dead(current_timestamp) {
+        pet.life_state = PetState::Dead {};
+        update_pet(&deps.api, &mut deps.storage, &canonical_from, id, pet)?;
+        return Err(StdError::generic_err("Pet is already dead"));
+    }
+    if !pet.can_be_fed(current_timestamp) {
+        return Err(StdError::generic_err("Not feeding time yet. "));
+    }
+
+    pet.feed(current_timestamp);
+
+    update_pet(&deps.api, &mut deps.storage, &canonical_from, id, pet)?;
+
     Ok(HandleResponse {
         messages: vec![],
         data: None,
         log: vec![
             log("action", "feed"),
             log("food_amount", amount),
-            log("time", env.block.time),
+            log("time", current_timestamp),
+            log("id", id),
         ],
     })
 }
@@ -186,6 +213,7 @@ fn query_accepted_token<S: ReadonlyStorage>(storage: &S) -> QueryResult {
         hash: config.accepted_token.hash,
     })
 }
+
 #[cfg(test)]
 mod tests {
     use cosmwasm_std::{

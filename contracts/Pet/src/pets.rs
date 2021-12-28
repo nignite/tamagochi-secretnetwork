@@ -6,6 +6,12 @@ use serde::{Deserialize, Serialize};
 
 use crate::state::PREFIX_PETS;
 
+#[derive(Clone, Debug, PartialEq, JsonSchema, Serialize, Deserialize)]
+pub enum PetState {
+    Alive {},
+    Dead {},
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Pet {
     pub id: u64,
@@ -14,7 +20,9 @@ pub struct Pet {
     pub last_fed: u64,
     pub allowed_feed_timespan: u64,
     pub total_saturation_time: u64,
+    pub life_state: PetState,
 }
+
 impl Pet {
     pub fn is_dead(&self, current_timestamp: u64) -> bool {
         current_timestamp > self.last_fed + self.total_saturation_time
@@ -24,6 +32,9 @@ impl Pet {
 
         current_timestamp > feeding_timestamp
             && current_timestamp < self.last_fed + self.total_saturation_time
+    }
+    pub fn feed(&mut self, current_timestamp: u64) {
+        self.last_fed = current_timestamp;
     }
 }
 
@@ -55,8 +66,6 @@ pub fn get_pets<A: Api, S: ReadonlyStorage>(
         .take(page_size as _)
         .collect();
 
-    
-        
     pets.map(|pets| (pets, store.len() as u64))
 }
 pub fn get_pet<A: Api, S: ReadonlyStorage>(
