@@ -1,16 +1,19 @@
 use cosmwasm_std::{Api, CanonicalAddr, ReadonlyStorage, StdError, StdResult, Storage};
 use cosmwasm_storage::{PrefixedStorage, ReadonlyPrefixedStorage};
 use schemars::JsonSchema;
-use secret_toolkit::storage::{AppendStore, AppendStoreMut};
+use secret_toolkit::{
+    serialization::Json,
+    storage::{AppendStore, AppendStoreMut},
+};
 use serde::{Deserialize, Serialize};
 
 use crate::state::PREFIX_PETS;
 
-// #[derive(Clone, Debug, PartialEq, JsonSchema, Serialize, Deserialize)]
-// pub enum PetState {
-//     Alive {},
-//     Dead {},
-// }
+#[derive(Clone, Debug, PartialEq, JsonSchema, Serialize, Deserialize)]
+pub enum PetState {
+    Alive {},
+    Dead {},
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Pet {
@@ -20,7 +23,7 @@ pub struct Pet {
     pub last_fed: u64,
     pub allowed_feed_timespan: u64,
     pub total_saturation_time: u64,
-    // pub life_state: PetState,
+    pub life_state: PetState,
 }
 
 impl Pet {
@@ -40,7 +43,7 @@ impl Pet {
 
 pub fn append_pet<S: Storage>(store: &mut S, pet: &Pet, owner: &CanonicalAddr) -> StdResult<()> {
     let mut store = PrefixedStorage::multilevel(&[PREFIX_PETS, owner.as_slice()], store);
-    let mut store = AppendStoreMut::attach_or_create(&mut store)?;
+    let mut store = AppendStoreMut::attach_or_create_with_serialization(&mut store, Json)?;
     store.push(pet)
 }
 pub fn get_pets<A: Api, S: ReadonlyStorage>(
@@ -52,7 +55,7 @@ pub fn get_pets<A: Api, S: ReadonlyStorage>(
 ) -> StdResult<(Vec<Pet>, u64)> {
     let store = ReadonlyPrefixedStorage::multilevel(&[PREFIX_PETS, owner.as_slice()], storage);
 
-    let store = AppendStore::<Pet, _, _>::attach(&store);
+    let store = AppendStore::<Pet, _, _>::attach_with_serialization(&store, Json);
     let store = if let Some(result) = store {
         result?
     } else {
@@ -75,7 +78,7 @@ pub fn get_pet<A: Api, S: ReadonlyStorage>(
     id: u64,
 ) -> StdResult<Pet> {
     let store = ReadonlyPrefixedStorage::multilevel(&[PREFIX_PETS, owner.as_slice()], storage);
-    let store = AppendStore::<Pet, _, _>::attach(&store);
+    let store = AppendStore::<Pet, _, _>::attach_with_serialization(&store, Json);
     let store = if let Some(result) = store {
         result?
     } else {
@@ -99,7 +102,7 @@ pub fn update_pet<A: Api, S: Storage>(
     pet: Pet,
 ) -> StdResult<()> {
     let mut store = PrefixedStorage::multilevel(&[PREFIX_PETS, owner.as_slice()], storage);
-    let store = AppendStoreMut::<Pet, _, _>::attach(&mut store);
+    let store = AppendStoreMut::<Pet, _, _>::attach_with_serialization(&mut store, Json);
     let mut store = if let Some(result) = store {
         result?
     } else {

@@ -8,7 +8,7 @@ use cosmwasm_std::{
 use crate::{
     constants::RESPONSE_BLOCK_SIZE,
     msg::{HandleAnswer, HandleMsg, InitMsg, QueryAnswer, QueryMsg},
-    pets::{append_pet, get_pet, get_pets, update_pet, Pet},
+    pets::{append_pet, get_pet, get_pets, update_pet, Pet, PetState},
     state::{Config, ContractConfig, ReadOnlyConfig},
 };
 use secret_toolkit::snip20;
@@ -89,7 +89,7 @@ pub fn try_create_pet<S: Storage, A: Api, Q: Querier>(
             total_saturation_time,
             name: name.clone(),
             last_fed: env.block.time,
-            // life_state: PetState::Alive {},
+            life_state: PetState::Alive {},
         },
         sender,
     )?;
