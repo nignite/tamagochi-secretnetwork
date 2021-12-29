@@ -98,12 +98,13 @@ This contract is a fork of the official SNIP-20 implementation. All the messages
 
 #### Pet
 
-| Message       | Description                                                            |
-| ------------- | ---------------------------------------------------------------------- |
-| Receive       | Callback message sent from the Food contract once someone sends tokens |
-| LastFed       | Returns the timestamp at which the pet was last fed. (Unix time)       |
-| Pets          | Returns paginated list of pets for the given address                   |
-| Pet           | Returns information about a single pet                                 |
-| AcceptedToken | Returns information about the token this contract uses                 |
+| Message       | Description                                                                                      |
+| ------------- | ------------------------------------------------------------------------------------------------ |
+| Receive       | Callback message sent from the Food contract once someone sends tokens                           |
+| CreatePet     | Used to create a pet for the user. ID will be automatically created and included in the response |
+| LastFed       | Returns the timestamp at which the pet was last fed. (Unix time)                                 |
+| Pets          | Returns paginated list of pets for the given address                                             |
+| Pet           | Returns information about a single pet                                                           |
+| AcceptedToken | Returns information about the token this contract uses                                           |
 
 To send food to the pet you will need to include the ID of the pet in the optional msg field on the Food SEND message.
