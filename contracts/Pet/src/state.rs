@@ -74,7 +74,7 @@ impl<'a, S: ReadonlyStorage> ReadOnlyConfig<'a, S> {
 struct ReadonlyConfigImpl<'a, S: ReadonlyStorage>(&'a S);
 impl<'a, S: ReadonlyStorage> ReadonlyConfigImpl<'a, S> {
     fn config(&self) -> StdResult<ContractConfig> {
-        let bytes = self.0.get(STATE_KEY).unwrap();
+        let bytes = self.0.get(CONFIG_KEY).unwrap();
         Bincode2::deserialize::<ContractConfig>(&bytes)
             .map_err(|e| StdError::serialize_err(type_name::<ContractConfig>(), e))
     }
