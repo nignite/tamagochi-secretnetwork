@@ -11,7 +11,8 @@ This is done using Food(snip20) tokens which the users sends to the Pet contract
 | [`Market`](contracts/Market) | Used as a marketplace to buy FOOD tokens       |
 | [`Food`](packages/Food)      | Snip-20 contract, used to create the token     |
 | [`Pet`](contracts/Pet)       | Tamagotchi like interface through the contract |
-
+## Per user instance  
+The main branch has a simple implementation of the Pet contract where the entire contract is a single pet. If the Pet dies, you need to create a new contract. For a better implementation checkout the instance branch.
 ## Frontend
 
 See [`Frontend`](frontend) folder
