@@ -111,7 +111,12 @@ pub fn try_feed<S: Storage, A: Api, Q: Querier>(
     //user should include id in the SEND message
     let store = ReadOnlyConfig::from_storage(&deps.storage);
     let config = store.state()?;
-    let id = from_binary::<u64>(&msg.unwrap())?;
+    let msg = msg.ok_or_else(|| {
+        StdError::generic_err(
+            "No message provided. Make sure to include the ID as a base64 string in the msg.",
+        )
+    })?;
+    let id = from_binary::<u64>(&msg)?;
     let canonical_from = deps.api.canonical_address(&from)?;
     let current_timestamp = env.block.time;
     if env.message.sender != config.accepted_token.address {
@@ -214,10 +219,11 @@ fn query_accepted_token<S: ReadonlyStorage>(storage: &S) -> QueryResult {
 
 #[cfg(test)]
 mod tests {
+
     use cosmwasm_std::{
         from_binary,
         testing::{mock_dependencies, mock_env, MOCK_CONTRACT_ADDR},
-        HumanAddr,
+        to_binary, HumanAddr, Uint128,
     };
 
     use crate::{
@@ -286,5 +292,85 @@ mod tests {
             _ => panic!("Invalid message returned. "),
         };
         assert!(status);
+    }
+    #[test]
+    fn test_handle_feed() {
+        let mut deps = mock_dependencies(20, &[]);
+        let env = mock_env("sender", &[]);
+        let msg = InitMsg {
+            accepted_token: SecretToken {
+                address: env.message.sender.clone(),
+                hash: "".to_string(),
+                viewing_key: "supersecret".to_string(),
+            },
+            admin: None,
+        };
+        let _res = init(&mut deps, env.clone(), msg).unwrap();
+
+        //create a pet
+        let create_pet_msg = HandleMsg::CreatePet {
+            allowed_feed_timespan: 0,
+            total_saturation_time: 14700,
+            name: String::from("work or rm -rf"),
+        };
+        let _res = handle(&mut deps, env.clone(), create_pet_msg).unwrap();
+
+        //feed the pet, should not fail
+        let feed_msg = HandleMsg::Receive {
+            amount: Uint128(1),
+            from: env.message.sender.clone(),
+            msg: Some(to_binary(&1).unwrap()),
+            sender: HumanAddr::from(MOCK_CONTRACT_ADDR),
+        };
+
+        let _res = handle(&mut deps, env.clone(), feed_msg).unwrap();
+
+        //feed the pet, but dont send id
+        let feed_msg = HandleMsg::Receive {
+            amount: Uint128(1),
+            from: env.message.sender.clone(),
+            msg: None,
+            sender: HumanAddr::from(MOCK_CONTRACT_ADDR),
+        };
+
+        let _res = handle(&mut deps, env.clone(), feed_msg).unwrap_err();
+    }
+
+    #[test]
+    fn test_query_pets() {
+        let mut deps = mock_dependencies(20, &[]);
+        let env = mock_env("sender", &[]);
+        let msg = InitMsg {
+            accepted_token: SecretToken {
+                address: env.message.sender.clone(),
+                hash: "".to_string(),
+                viewing_key: "supersecret".to_string(),
+            },
+            admin: None,
+        };
+        let _res = init(&mut deps, env.clone(), msg).unwrap();
+
+        //create a pet
+        let create_pet_msg = HandleMsg::CreatePet {
+            allowed_feed_timespan: 0,
+            total_saturation_time: 14700,
+            name: String::from("work or rm -rf"),
+        };
+        let _res = handle(&mut deps, env.clone(), create_pet_msg).unwrap();
+
+        //query to check if it was created, should return 1 pet
+        let query_one_msg = QueryMsg::Pets {
+            owner: env.message.sender.clone(),
+            page: Some(0),
+            page_size: Some(10),
+        };
+        let res = query(&deps, query_one_msg).unwrap();
+        let answer = from_binary::<QueryAnswer>(&res).unwrap();
+        match answer {
+            QueryAnswer::Pets { pets, .. } => {
+                assert_eq!(pets.len(), 1);
+            }
+            _ => panic!("Invalid message returned. "),
+        }
     }
 }

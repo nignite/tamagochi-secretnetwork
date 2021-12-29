@@ -10,12 +10,14 @@ use serde::{Deserialize, Serialize};
 use crate::state::PREFIX_PETS;
 
 #[derive(Clone, Debug, PartialEq, JsonSchema, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum PetState {
     Alive {},
     Dead {},
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[serde(rename_all = "snake_case")]
 pub struct Pet {
     pub id: u64,
     pub name: String,
@@ -33,8 +35,8 @@ impl Pet {
     pub fn can_be_fed(&self, current_timestamp: u64) -> bool {
         let feeding_timestamp = self.last_fed + self.allowed_feed_timespan;
 
-        current_timestamp > feeding_timestamp
-            && current_timestamp < self.last_fed + self.total_saturation_time
+        current_timestamp >= feeding_timestamp
+            && current_timestamp <= self.last_fed + self.total_saturation_time
     }
     pub fn feed(&mut self, current_timestamp: u64) {
         self.last_fed = current_timestamp;
@@ -82,7 +84,7 @@ pub fn get_pet<A: Api, S: ReadonlyStorage>(
     let store = if let Some(result) = store {
         result?
     } else {
-        return Err(StdError::not_found("No storage with key"));
+        return Err(StdError::not_found("User does not have any pets"));
     };
 
     let pet = store.iter().rev().find(|x| x.as_ref().unwrap().id == id);
@@ -106,7 +108,9 @@ pub fn update_pet<A: Api, S: Storage>(
     let mut store = if let Some(result) = store {
         result?
     } else {
-        return Err(StdError::not_found("No storage with key"));
+        return Err(StdError::not_found(
+            "User does not have any pets. Cannot update",
+        ));
     };
 
     let position = store.iter().position(|x| x.unwrap().id == id).unwrap();

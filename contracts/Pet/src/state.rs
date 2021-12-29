@@ -8,9 +8,9 @@ use cosmwasm_std::{HumanAddr, ReadonlyStorage, StdError, StdResult, Storage};
 use cosmwasm_storage::{PrefixedStorage, ReadonlyPrefixedStorage};
 
 pub static CONFIG_KEY: &[u8] = b"config";
-pub static STATE_KEY: &[u8] = b"state";
 pub static PETS_COUNT_KEY: &[u8] = b"pets_count";
 
+pub static PREFIX_STATE: &[u8] = b"state";
 pub static PREFIX_PETS: &[u8] = b"pets";
 
 fn ser_bin_data<T: Serialize>(obj: &T) -> StdResult<Vec<u8>> {
@@ -57,7 +57,7 @@ pub struct ReadOnlyConfig<'a, S: ReadonlyStorage> {
 impl<'a, S: ReadonlyStorage> ReadOnlyConfig<'a, S> {
     pub fn from_storage(storage: &'a S) -> Self {
         Self {
-            storage: ReadonlyPrefixedStorage::new(STATE_KEY, storage),
+            storage: ReadonlyPrefixedStorage::new(PREFIX_STATE, storage),
         }
     }
     fn as_readonly(&self) -> ReadonlyConfigImpl<ReadonlyPrefixedStorage<S>> {
@@ -90,7 +90,7 @@ pub struct Config<'a, S: Storage> {
 impl<'a, S: Storage> Config<'a, S> {
     pub fn from_storage(storage: &'a mut S) -> Self {
         Self {
-            storage: PrefixedStorage::new(STATE_KEY, storage),
+            storage: PrefixedStorage::new(PREFIX_STATE, storage),
         }
     }
     fn as_readonly(&self) -> ReadonlyConfigImpl<PrefixedStorage<S>> {
