@@ -50,10 +50,10 @@ pub enum QueryMsg {
 #[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryAnswer {
-    LastFedResponse {
+    LastFed {
         timestamp: u64,
     },
-    PetInfoResponse {
+    Pet {
         id: u64,
         name: String,
         allowed_feed_timespan: u64,

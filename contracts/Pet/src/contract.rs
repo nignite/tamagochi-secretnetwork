@@ -178,7 +178,7 @@ fn query_last_fed<S: Storage, A: Api, Q: Querier>(
 ) -> QueryResult {
     let canonical = deps.api.canonical_address(&owner)?;
     let pet = get_pet(&deps.api, &deps.storage, &canonical, id)?;
-    to_binary(&QueryAnswer::LastFedResponse {
+    to_binary(&QueryAnswer::LastFed {
         timestamp: pet.last_fed,
     })
 }
@@ -189,7 +189,7 @@ fn query_pet_info<S: Storage, A: Api, Q: Querier>(
 ) -> QueryResult {
     let canonical = deps.api.canonical_address(&owner)?;
     let pet = get_pet(&deps.api, &deps.storage, &canonical, id)?;
-    to_binary(&QueryAnswer::PetInfoResponse {
+    to_binary(&QueryAnswer::Pet {
         id: pet.id,
         name: pet.name,
         allowed_feed_timespan: pet.allowed_feed_timespan,
@@ -281,7 +281,7 @@ mod tests {
 
         //created pet id should be 1 as its the first one.
         let status = match answer {
-            QueryAnswer::PetInfoResponse {
+            QueryAnswer::Pet {
                 allowed_feed_timespan: _,
                 total_saturation_time: _,
                 name: _,
@@ -369,6 +369,120 @@ mod tests {
         match answer {
             QueryAnswer::Pets { pets, .. } => {
                 assert_eq!(pets.len(), 1);
+            }
+            _ => panic!("Invalid message returned. "),
+        }
+    }
+    #[test]
+    fn test_query_pet_info() {
+        let mut deps = mock_dependencies(20, &[]);
+        let env = mock_env("sender", &[]);
+        let msg = InitMsg {
+            accepted_token: SecretToken {
+                address: env.message.sender.clone(),
+                hash: "".to_string(),
+                viewing_key: "supersecret".to_string(),
+            },
+            admin: None,
+        };
+        let _res = init(&mut deps, env.clone(), msg).unwrap();
+
+        //create a pet
+        let create_pet_msg = HandleMsg::CreatePet {
+            allowed_feed_timespan: 0,
+            total_saturation_time: 14700,
+            name: String::from("work or rm -rf"),
+        };
+        let _res = handle(&mut deps, env.clone(), create_pet_msg).unwrap();
+
+        //query with pet info for the pet created, check if the names are the same
+        let query_one_msg = QueryMsg::Pet {
+            id: 1,
+            owner: env.message.sender.clone(),
+        };
+        let res = query(&deps, query_one_msg).unwrap();
+        let answer = from_binary::<QueryAnswer>(&res).unwrap();
+        match answer {
+            QueryAnswer::Pet {
+                allowed_feed_timespan: _,
+                total_saturation_time: _,
+                name: pet_name,
+                id: _,
+            } => {
+                assert_eq!(pet_name, "work or rm -rf");
+            }
+            _ => panic!("Invalid message returned. "),
+        }
+    }
+    #[test]
+    fn test_query_last_fed() {
+        let mut deps = mock_dependencies(20, &[]);
+        let env = mock_env("sender", &[]);
+        let msg = InitMsg {
+            accepted_token: SecretToken {
+                address: env.message.sender.clone(),
+                hash: "".to_string(),
+                viewing_key: "supersecret".to_string(),
+            },
+            admin: None,
+        };
+        let _res = init(&mut deps, env.clone(), msg).unwrap();
+
+        //create a pet
+        let create_pet_msg = HandleMsg::CreatePet {
+            allowed_feed_timespan: 0,
+            total_saturation_time: 14700,
+            name: String::from("work or rm -rf"),
+        };
+        let _res = handle(&mut deps, env.clone(), create_pet_msg).unwrap();
+
+        //feed the pet
+        let current_time = env.block.time;
+        let feed_msg = HandleMsg::Receive {
+            amount: Uint128(1),
+            from: env.message.sender.clone(),
+            msg: Some(to_binary(&1).unwrap()),
+            sender: HumanAddr::from(MOCK_CONTRACT_ADDR),
+        };
+
+        let _res = handle(&mut deps, env.clone(), feed_msg).unwrap();
+
+        //query lastfed for the pet created, check if the time is the same
+        let query_one_msg = QueryMsg::LastFed {
+            id: 1,
+            owner: env.message.sender.clone(),
+        };
+        let res = query(&deps, query_one_msg).unwrap();
+        let answer = from_binary::<QueryAnswer>(&res).unwrap();
+        match answer {
+            QueryAnswer::LastFed { timestamp } => {
+                assert_eq!(timestamp, current_time);
+            }
+            _ => panic!("Invalid message returned. "),
+        }
+    }
+
+    #[test]
+    fn test_query_accepted_token() {
+        let mut deps = mock_dependencies(20, &[]);
+        let env = mock_env("sender", &[]);
+        let msg = InitMsg {
+            accepted_token: SecretToken {
+                address: env.message.sender.clone(),
+                hash: "".to_string(),
+                viewing_key: "supersecret".to_string(),
+            },
+            admin: None,
+        };
+        let _res = init(&mut deps, env.clone(), msg).unwrap();
+
+        //query accepted token for the contract, check if its teh same
+        let query_one_msg = QueryMsg::AcceptedToken {};
+        let res = query(&deps, query_one_msg).unwrap();
+        let answer = from_binary::<QueryAnswer>(&res).unwrap();
+        match answer {
+            QueryAnswer::AcceptedToken { address, hash: _ } => {
+                assert_eq!(env.message.sender, address);
             }
             _ => panic!("Invalid message returned. "),
         }
