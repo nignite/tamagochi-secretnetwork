@@ -1,8 +1,6 @@
-# Tamagotchi
+# Tamagotchi - instance
 
-The traditional, Japanese, handheld digital pet. Recreated using smart contracts.
-The point of the game is to keep the pet alive by feeding them.
-This is done using Food(snip20) tokens which the users sends to the Pet contract. Feeding can only be done after a certain time to avoid constant feeding. To purchase Food tokens, a BuyFood message must be sent over to the Market contract. This will mint tokens for the user based on the preset exchange ratio.
+The following implementation is a more detailed and complex version. It features pet creation for any user, history of all pets and their status. Each user can create his own pets, amount is not limited. Besides that, this version has been cleaned up and separated more properly into modules and helper function. As well as more detailed unit tests.
 
 ## Contracts
 
@@ -25,7 +23,7 @@ chmod +x ./scripts/1_build_optimize_all.sh
 ./scripts/1_build_optimize_all.sh
 ```
 
-This is done for compatability reasons. Namely, the optimizer container does not support workspaces and some crates fail to compile on ARM ased CPU's.
+This is done for compatability reasons. Namely, the optimizer container does not support workspaces and some crates fail to compile on ARM based CPU's.
 
 The optimized contracts are generated in the artifacts/ directory.
 
@@ -66,13 +64,15 @@ You can use a local node or connect to a testnet. These contracts have been test
       {
          "address": "<food contract address>",
          "hash":"<food contract hash>",
+         "viewing_key": "<some secret>"
+
       },
-   "allowed_feed_timespan": <time in seconds>,
-   "total_saturation_time": <time in secconds>,
-   "viewing_key": "<some secret>"
+      "admin": "<optional humanaddr of the admin>"
 }
 ```
+
 4. Add the Market contract as a valid minter
+
 ```
    secretcli tx compute execute FOOD_ADDR '{"add_minters": {"minters":[MARKET_ADDR]}}' --from WALLET
 ```
@@ -98,7 +98,12 @@ This contract is a fork of the official SNIP-20 implementation. All the messages
 
 #### Pet
 
-| Message | Description                                                            |
-| ------- | ---------------------------------------------------------------------- |
-| Receive | Callback message sent from the Food contract once someone sends tokens |
-| LastFed | Returns the timestamp at which the pet was last fed. (Unix time)       |
+| Message       | Description                                                            |
+| ------------- | ---------------------------------------------------------------------- |
+| Receive       | Callback message sent from the Food contract once someone sends tokens |
+| LastFed       | Returns the timestamp at which the pet was last fed. (Unix time)       |
+| Pets          | Returns paginated list of pets for the given address                   |
+| Pet           | Returns information about a single pet                                 |
+| AcceptedToken | Returns information about the token this contract uses                 |
+
+To send food to the pet you will need to include the ID of the pet in the optional msg field on the Food SEND message.
