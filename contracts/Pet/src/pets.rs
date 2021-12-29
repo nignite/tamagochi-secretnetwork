@@ -6,11 +6,11 @@ use serde::{Deserialize, Serialize};
 
 use crate::state::PREFIX_PETS;
 
-#[derive(Clone, Debug, PartialEq, JsonSchema, Serialize, Deserialize)]
-pub enum PetState {
-    Alive {},
-    Dead {},
-}
+// #[derive(Clone, Debug, PartialEq, JsonSchema, Serialize, Deserialize)]
+// pub enum PetState {
+//     Alive {},
+//     Dead {},
+// }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Pet {
@@ -20,7 +20,7 @@ pub struct Pet {
     pub last_fed: u64,
     pub allowed_feed_timespan: u64,
     pub total_saturation_time: u64,
-    pub life_state: PetState,
+    // pub life_state: PetState,
 }
 
 impl Pet {

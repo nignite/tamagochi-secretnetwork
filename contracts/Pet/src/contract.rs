@@ -8,7 +8,7 @@ use cosmwasm_std::{
 use crate::{
     constants::RESPONSE_BLOCK_SIZE,
     msg::{HandleAnswer, HandleMsg, InitMsg, QueryAnswer, QueryMsg},
-    pets::{append_pet, get_pet, get_pets, update_pet, Pet, PetState},
+    pets::{append_pet, get_pet, get_pets, update_pet, Pet},
     state::{Config, ContractConfig, ReadOnlyConfig},
 };
 use secret_toolkit::snip20;
@@ -89,7 +89,7 @@ pub fn try_create_pet<S: Storage, A: Api, Q: Querier>(
             total_saturation_time,
             name: name.clone(),
             last_fed: env.block.time,
-            life_state: PetState::Alive {},
+            // life_state: PetState::Alive {},
         },
         sender,
     )?;
@@ -121,7 +121,7 @@ pub fn try_feed<S: Storage, A: Api, Q: Querier>(
     let mut pet = get_pet(&deps.api, &deps.storage, &canonical_from, id)?;
 
     if pet.is_dead(current_timestamp) {
-        pet.life_state = PetState::Dead {};
+        // pet.life_state = PetState::Dead {};
         update_pet(&deps.api, &mut deps.storage, &canonical_from, id, pet)?;
         return Err(StdError::generic_err("Pet is already dead"));
     }
@@ -199,9 +199,7 @@ fn query_pets<S: Storage, A: Api, Q: Querier>(
 ) -> QueryResult {
     let canonical = deps.api.canonical_address(&owner)?;
     let (pets, len) = get_pets(&deps.api, &deps.storage, &canonical, page, page_size)?;
-    for pet in &pets {
-        println!("{:?}", pet)
-    }
+
     to_binary(&QueryAnswer::Pets { pets, size: len })
 }
 fn query_accepted_token<S: ReadonlyStorage>(storage: &S) -> QueryResult {

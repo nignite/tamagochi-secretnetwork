@@ -47,7 +47,7 @@ pub enum QueryMsg {
     },
     AcceptedToken {},
 }
-#[derive(Serialize, Deserialize, JsonSchema, Debug)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryAnswer {
     LastFedResponse {
@@ -68,7 +68,7 @@ pub enum QueryAnswer {
         pets: Vec<Pet>,
     },
 }
-#[derive(Serialize, Deserialize, JsonSchema, Debug)]
+#[derive(Serialize, Deserialize, JsonSchema, Clone, Debug)]
 #[serde(rename_all = "snake_case")]
 pub enum HandleAnswer {
     CreatePet { name: String, id: u64 },
